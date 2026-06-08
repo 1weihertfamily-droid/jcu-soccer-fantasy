@@ -1,0 +1,289 @@
+import Image from "next/image";
+import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import { buildLeaderboard } from "@/lib/leaderboard";
+
+const { data: activeGames } = await supabase
+  .from("games")
+  .select("*")
+  .eq("active", true)
+  .order("id");
+
+const games = activeGames ?? [];
+
+export default async function Home() {
+  const { data: players, error } = await supabase
+    .from("players")
+    .select("*")
+    .eq("active", true)
+    .order("name");
+
+  const { data: stats } = await supabase
+    .from("player_stats")
+    .select("*");
+
+  const { data: scoringRows } = await supabase
+    .from("fantasy_points_values")
+    .select("*");
+
+  const scoring = Object.fromEntries(
+    (scoringRows ?? []).map((row) => [
+      row.action,
+      Number(row.value),
+    ])
+  );
+
+  const leaderboard = buildLeaderboard(
+    players ?? [],
+    stats ?? [],
+    scoring
+  );
+
+    // ---------------------------
+  // Homepage Awards
+  // ---------------------------
+
+  const { data: allBallots } = await supabase
+  .from("ballots")
+  .select("id, game_id");
+
+const latestGameId =
+  allBallots?.reduce(
+    (max, ballot) =>
+      Math.max(max, ballot.game_id),
+    0
+  ) ?? 0;
+
+const ballotIds =
+  allBallots
+    ?.filter(
+      (ballot) =>
+        ballot.game_id === latestGameId
+    )
+    .map((ballot) => ballot.id) ?? [];
+
+  const { data: votes } = await supabase
+    .from("ballot_votes")
+    .select("*")
+    .in("ballot_id", ballotIds);
+
+  const playerMap = new Map(
+    (players ?? []).map((player) => [
+      player.id,
+      player.name,
+    ])
+  );
+
+  function getWinner(category: string) {
+    const categoryVotes =
+      votes?.filter(
+        (vote) => vote.category === category
+      ) ?? [];
+
+    const counts = new Map<
+      number,
+      {
+        name: string;
+        votes: number;
+      }
+    >();
+
+    categoryVotes.forEach((vote: any) => {
+      const existing = counts.get(
+        vote.player_id
+      );
+
+      if (existing) {
+        existing.votes += 1;
+      } else {
+        counts.set(vote.player_id, {
+          name:
+            playerMap.get(vote.player_id) ??
+            "Unknown Player",
+          votes: 1,
+        });
+      }
+    });
+
+    return [...counts.values()].sort(
+      (a, b) => b.votes - a.votes
+    )[0];
+  }
+
+  const goatWinner =
+    getWinner("goat");
+
+  const workerWinner =
+    getWinner("hardest_worker");
+
+  const defenseWinner =
+    getWinner("unstoppable_defense");
+
+  return (
+    <main className="min-h-screen bg-black text-white">
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="text-center mb-10">
+          <Image
+            src="/jcu-logo.png"
+            alt="JCU Logo"
+            width={220}
+            height={220}
+            className="mx-auto mb-6"
+          />
+
+          <h1 className="text-5xl font-bold text-red-500">
+            Jefferson County United
+          </h1>
+
+          <h2 className="text-2xl mt-4">
+            JCU U9/U10 Soccer Fantasy
+          </h2>
+        </div>
+
+        <div className="bg-zinc-900 rounded-xl p-6 shadow-lg">
+          <h3 className="text-2xl font-bold mb-4">
+            🏆 Current Leaderboard
+          </h3>
+
+          {error && (
+            <p className="text-red-500 mb-4">
+              Error loading players: {error.message}
+            </p>
+          )}
+
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-zinc-700">
+                <th className="text-left py-3">Rank</th>
+                <th className="text-left py-3">Player</th>
+                <th className="text-right py-3">Points</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {leaderboard.map((player, index) => (
+                <tr
+                  key={player.id}
+                  className="border-b border-zinc-800"
+                >
+                  <td className="py-3">
+                    {index + 1}
+                  </td>
+
+                  <td className="py-3">
+                    {player.name}
+                  </td>
+
+                  <td className="py-3 text-right">
+                    {player.points}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+<div className="mt-8 mb-4">
+  <h2 className="text-xl font-bold">
+    Latest Award Winners
+  </h2>
+
+  <p className="text-zinc-400">
+    Game {latestGameId}
+  </p>
+</div>
+
+<div className="grid md:grid-cols-3 gap-4 mt-8">
+  <div className="bg-zinc-900 rounded-xl p-5">
+    <h3 className="font-bold text-yellow-400">
+      🏆 GOAT
+    </h3>
+
+    <p className="mt-2 text-xl font-semibold">
+      {goatWinner?.name ??
+        "No votes yet"}
+    </p>
+
+    {goatWinner && (
+      <p className="text-zinc-400">
+        {goatWinner.votes} vote
+        {goatWinner.votes !== 1
+          ? "s"
+          : ""}
+      </p>
+    )}
+  </div>
+
+  <div className="bg-zinc-900 rounded-xl p-5">
+    <h3 className="font-bold text-orange-400">
+      🔥 Hardest Worker
+    </h3>
+
+    <p className="mt-2 text-xl font-semibold">
+      {workerWinner?.name ??
+        "No votes yet"}
+    </p>
+
+    {workerWinner && (
+      <p className="text-zinc-400">
+        {workerWinner.votes} vote
+        {workerWinner.votes !== 1
+          ? "s"
+          : ""}
+      </p>
+    )}
+  </div>
+
+  <div className="bg-zinc-900 rounded-xl p-5">
+    <h3 className="font-bold text-blue-400">
+      🛡️ Unstoppable Defense
+    </h3>
+
+    <p className="mt-2 text-xl font-semibold">
+      {defenseWinner?.name ??
+        "No votes yet"}
+    </p>
+
+    {defenseWinner && (
+      <p className="text-zinc-400">
+        {defenseWinner.votes} vote
+        {defenseWinner.votes !== 1
+          ? "s"
+          : ""}
+      </p>
+    )}
+  </div>
+</div>
+
+        <div className="mt-8">
+            
+          <h2 className="text-2xl font-bold mb-4">
+            ⚽ Games
+          </h2>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {games.map((game) => (
+              <Link
+                key={game.id}
+                href={`/games/${game.id}`}
+                className="bg-zinc-900 rounded-xl p-4 hover:bg-zinc-800 transition"
+              >
+                <div className="text-lg font-semibold">
+                  {game.name}
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="flex justify-end mt-8">
+            <Link
+              href="/admin"
+              className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
+            >
+              Admin
+            </Link>
+          </div>
+      </div>
+      </div>
+    </main>
+  );
+}
