@@ -125,8 +125,7 @@ async function resetVoting(gameId: number) {
     {
       method: "POST",
       headers: {
-        "Content-Type":
-          "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         gameId,
@@ -134,21 +133,45 @@ async function resetVoting(gameId: number) {
     }
   );
 
-  const result =
-    await response.json();
+  const result = await response.json();
 
   if (!response.ok) {
-    alert(
-      `Reset failed: ${result.error}`
-    );
+    alert(`Reset failed: ${result.error}`);
     return;
   }
 
-  alert(
-    "Voting successfully reset."
-  );
+  alert("Voting successfully reset.");
 }
 
+async function clearGameStats(gameId: number) {
+  const confirmed = confirm(
+    "Delete ALL player stats for this game?"
+  );
+
+  if (!confirmed) return;
+
+  const response = await fetch(
+    "/api/admin/games/reset-stats",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        gameId,
+      }),
+    }
+  );
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    alert(`Reset failed: ${result.error}`);
+    return;
+  }
+
+  alert("Game stats successfully cleared.");
+}
   return (
     <main className="min-h-screen bg-black text-white p-8">
       <div className="max-w-5xl mx-auto">
@@ -206,11 +229,11 @@ async function resetVoting(gameId: number) {
                 </th>
 
                 <th className="text-center p-4">
-                    Status
+                    Voting
                 </th>
 
                 <th className="text-center p-4">
-                    Voting
+                    Stats
                 </th>
               </tr>
             </thead>
@@ -282,18 +305,23 @@ async function resetVoting(gameId: number) {
                     />
                   </td>
 
-                  <td className="text-center text-zinc-400">
-                    Modified
-                    </td>
-
-                    <td className="text-center">
+                  <td className="text-center">
                     <button
-                        onClick={() => resetVoting(game.id)}
-                        className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded text-sm font-semibold"
+                      onClick={() => resetVoting(game.id)}
+                      className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded text-sm font-semibold"
                     >
-                        Reset Voting
+                      Reset Voting
                     </button>
-                    </td>
+                  </td>
+
+                  <td className="text-center">
+                    <button
+                      onClick={() => clearGameStats(game.id)}
+                      className="bg-orange-600 hover:bg-orange-700 px-3 py-2 rounded text-sm font-semibold"
+                    >
+                      Clear Stats
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
