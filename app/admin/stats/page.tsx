@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type Player = {
@@ -214,9 +214,18 @@ useEffect(() => {
   return (
     <main className="min-h-screen bg-black text-white p-8">
       <div className="max-w-[1800px] mx-auto">
-        <h1 className="text-5xl font-bold mb-8">
-          Admin Stat Entry
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+            <h1 className="text-5xl font-bold">
+            Admin Stat Entry
+            </h1>
+
+            <Link
+            href="/admin"
+            className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded"
+            >
+            ← Back to Dashboard
+            </Link>
+        </div>
 
         <div className="mb-8">
           <label className="block mb-2 font-semibold">
