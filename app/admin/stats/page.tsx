@@ -255,10 +255,10 @@ useEffect(() => {
         </div>
 
         <div className="overflow-x-auto max-h-[70vh]">
-          <table className="w-full border-collapse text-sm">
+          <table className="border-collapse text-sm w-max">
             <thead className="sticky top-0 z-30 bg-black">
               <tr className="border-b border-zinc-700 bg-black">
-                <th className="sticky left-0 bg-black text-left p-2 min-w-[160px] z-40">
+                <th className="sticky left-0 bg-black text-left p-2 z-40 whitespace-nowrap">
                   Player
                 </th>
                 <th className="w-24 text-center">
@@ -332,7 +332,7 @@ useEffect(() => {
                   key={row.player_id}
                   className="border-b border-zinc-800"
                 >
-                  <td className="sticky left-0 bg-black p-2 font-medium z-10">
+                  <td className="sticky left-0 bg-black p-2 font-medium z-10 whitespace-nowrap">
                     {row.player_name}
                   </td>
 
@@ -515,7 +515,7 @@ function StatCell({
               : Number(e.target.value)
           )
         }
-        className="w-20 p-2 rounded bg-zinc-800 border border-zinc-700 text-center text-white"
+        className="w-12 p-1 rounded bg-zinc-800 border border-zinc-700 text-center text-white"
       />
     </td>
   );
