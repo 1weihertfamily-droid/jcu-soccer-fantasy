@@ -255,6 +255,11 @@ const displayStat = (value: number) =>
                 </th>
 
                 <th className="text-center py-3">
+                  <span className="hidden md:inline">Saves</span>
+                  <span className="md:hidden">S</span>
+                </th>
+
+                <th className="text-center py-3">
                   <span className="hidden md:inline">Great Passes</span>
                   <span className="md:hidden">GP</span>
                 </th>
@@ -272,6 +277,21 @@ const displayStat = (value: number) =>
                 <th className="text-center py-3">
                   <span className="hidden md:inline">Sportsmanship</span>
                   <span className="md:hidden">SP</span>
+                </th>
+
+                <th className="text-center py-3">
+                  <span className="hidden md:inline">Penalty</span>
+                  <span className="md:hidden">P</span>
+                </th>
+
+                <th className="text-center py-3">
+                  <span className="hidden md:inline">Yellow Cards</span>
+                  <span className="md:hidden">YC</span>
+                </th>
+
+                <th className="text-center py-3">
+                  <span className="hidden md:inline">Red Cards</span>
+                  <span className="md:hidden">RC</span>
                 </th>
 
                 <th className="text-center py-3 text-red-400">
@@ -306,6 +326,10 @@ const displayStat = (value: number) =>
                   </td>
 
                   <td className="text-center">
+                    {displayStat(stat.goal_saves)}
+                  </td>
+
+                  <td className="text-center">
                     {displayStat(stat.great_passes)}
                   </td>
 
@@ -321,6 +345,18 @@ const displayStat = (value: number) =>
                     {displayStat(stat.good_sportsmanship)}
                   </td>
 
+                  <td className="text-center">
+                    {displayStat(stat.penalties)}
+                  </td>
+
+                  <td className="text-center">
+                    {displayStat(stat.yellow_cards)}
+                  </td>
+
+                  <td className="text-center">
+                    {displayStat(stat.red_cards)}
+                  </td>
+
                   <td className="text-center font-bold text-red-400">
                     {displayStat(stat.fantasyPoints)}
                   </td>
@@ -328,24 +364,26 @@ const displayStat = (value: number) =>
               ))}
             </tbody>
           </table>
-          <div className="mt-4 text-sm text-zinc-400">
-            <p>
-              <strong>Legend:</strong>
-            </p>
+          <div className="mt-8 bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+            <h3 className="font-bold text-lg mb-3">
+              Stat Legend
+            </h3>
 
-            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
-              <span>G = Goals</span>
-              <span>A = Assists</span>
-              <span>D = Defensive Stops</span>
-              <span>S = Goal Saves</span>
-              <span>GP = Great Passes</span>
-              <span>H = Hustle Plays</span>
-              <span>ATT = Positive Attitude</span>
-              <span>SP = Sportsmanship</span>
-              <span>P = Penalties</span>
-              <span>YC = Yellow Cards</span>
-              <span>RC = Red Cards</span>
-              <span>FP = Fantasy Points</span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-zinc-300">
+              <div><span className="font-bold text-white">G</span> = Goals Scored</div>
+              <div><span className="font-bold text-white">A</span> = Assists</div>
+              <div><span className="font-bold text-white">D</span> = Defensive Stops</div>
+              <div><span className="font-bold text-white">S</span> = Goalkeeper Saves</div>
+
+              <div><span className="font-bold text-white">GP</span> = Great Passes</div>
+              <div><span className="font-bold text-white">H</span> = Hustle Plays</div>
+              <div><span className="font-bold text-white">ATT</span> = Positive Attitude</div>
+              <div><span className="font-bold text-white">SP</span> = Good Sportsmanship</div>
+
+              <div><span className="font-bold text-red-300">P</span> = Penalties Committed</div>
+              <div><span className="font-bold text-yellow-400">YC</span> = Yellow Cards</div>
+              <div><span className="font-bold text-red-400">RC</span> = Red Cards</div>
+              <div><span className="font-bold text-red-500">FP</span> = Fantasy Points</div>
             </div>
           </div>
         </div>

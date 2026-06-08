@@ -474,6 +474,13 @@ useEffect(() => {
             </div>
 
             <div>
+              <span className="font-bold text-red-300">
+                Penalties
+              </span>
+              {" "} = Penalties Committed
+            </div>
+
+            <div>
               <span className="font-bold text-yellow-400">
                 YC
               </span>
@@ -487,12 +494,7 @@ useEffect(() => {
               {" "} = Red Cards
             </div>
 
-            <div>
-              <span className="font-bold text-red-300">
-                Penalties
-              </span>
-              {" "} = Penalties Committed
-            </div>
+            
           </div>
         </div>
 
