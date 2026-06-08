@@ -254,27 +254,25 @@ useEffect(() => {
           </select>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto max-h-[70vh]">
           <table className="w-full border-collapse text-sm">
-            <thead>
-              <tr className="border-b border-zinc-700">
-                <th className="text-left p-2 min-w-[160px]">
+            <thead className="sticky top-0 z-30 bg-black">
+              <tr className="border-b border-zinc-700 bg-black">
+                <th className="sticky left-0 bg-black text-left p-2 min-w-[160px] z-40">
                   Player
                 </th>
 
-                <th className="p-2">Goals</th>
-                <th className="p-2">Assists</th>
-                <th className="p-2">Stops</th>
-                <th className="p-2">Saves</th>
-                <th className="p-2">Great Passes</th>
-                <th className="p-2">Hustle</th>
-                <th className="p-2">Attitude</th>
-                <th className="p-2">
-                  Sportsmanship
-                </th>
-                <th className="p-2">Penalties</th>
-                <th className="p-2">YC</th>
-                <th className="p-2">RC</th>
+                <th className="w-24 text-center">G</th>
+                <th className="w-24 text-center">A</th>
+                <th className="w-24 text-center">D</th>
+                <th className="w-24 text-center">S</th>
+                <th className="w-24 text-center">GP</th>
+                <th className="w-24 text-center">H</th>
+                <th className="w-24 text-center">Att</th>
+                <th className="w-24 text-center">Sp</th>
+                <th className="w-24 text-center">P</th>
+                <th className="w-24 text-center">YC</th>
+                <th className="w-24 text-center">RC</th>
               </tr>
             </thead>
 
@@ -284,7 +282,7 @@ useEffect(() => {
                   key={row.player_id}
                   className="border-b border-zinc-800"
                 >
-                  <td className="p-2 font-medium">
+                  <td className="sticky left-0 bg-black p-2 font-medium z-10">
                     {row.player_name}
                   </td>
 
@@ -412,6 +410,90 @@ useEffect(() => {
               ))}
             </tbody>
           </table>
+        </div>
+        <div className="mt-8 bg-zinc-900 border border-zinc-800 rounded-lg p-4">
+          <h3 className="font-bold text-lg mb-3">
+            Stat Legend
+          </h3>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-zinc-300">
+            <div>
+              <span className="font-bold text-white">
+                Goals
+              </span>
+              {" "} = Goals Scored
+            </div>
+
+            <div>
+              <span className="font-bold text-white">
+                Assists
+              </span>
+              {" "} = Assists
+            </div>
+
+            <div>
+              <span className="font-bold text-white">
+                Stops
+              </span>
+              {" "} = Defensive Stops
+            </div>
+
+            <div>
+              <span className="font-bold text-white">
+                Saves
+              </span>
+              {" "} = Goalkeeper Saves
+            </div>
+
+            <div>
+              <span className="font-bold text-white">
+                Great Passes
+              </span>
+              {" "} = Key Passes
+            </div>
+
+            <div>
+              <span className="font-bold text-white">
+                Hustle
+              </span>
+              {" "} = Hustle Plays
+            </div>
+
+            <div>
+              <span className="font-bold text-white">
+                Attitude
+              </span>
+              {" "} = Positive Attitude
+            </div>
+
+            <div>
+              <span className="font-bold text-white">
+                Sportsmanship
+              </span>
+              {" "} = Good Sportsmanship
+            </div>
+
+            <div>
+              <span className="font-bold text-yellow-400">
+                YC
+              </span>
+              {" "} = Yellow Cards
+            </div>
+
+            <div>
+              <span className="font-bold text-red-400">
+                RC
+              </span>
+              {" "} = Red Cards
+            </div>
+
+            <div>
+              <span className="font-bold text-red-300">
+                Penalties
+              </span>
+              {" "} = Penalties Committed
+            </div>
+          </div>
         </div>
 
         <button
