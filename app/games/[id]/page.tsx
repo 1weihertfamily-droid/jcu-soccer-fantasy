@@ -239,63 +239,63 @@ const displayStat = (value: number) =>
                   Player
                 </th>
 
-                <th className="text-center py-3">
+                <th className="text-center py-3 border-l border-zinc-700">
                   <span className="hidden md:inline">Goals</span>
                   <span className="md:hidden">G</span>
                 </th>
 
-                <th className="text-center py-3">
+                <th className="text-center py-3 border-l border-zinc-700">
                   <span className="hidden md:inline">Assists</span>
                   <span className="md:hidden">A</span>
                 </th>
 
-                <th className="text-center py-3">
+                <th className="text-center py-3 border-l border-zinc-700">
                   <span className="hidden md:inline">Stops</span>
                   <span className="md:hidden">D</span>
                 </th>
 
-                <th className="text-center py-3">
+                <th className="text-center py-3 border-l border-zinc-700">
                   <span className="hidden md:inline">Saves</span>
                   <span className="md:hidden">S</span>
                 </th>
 
-                <th className="text-center py-3">
+                <th className="text-center py-3 border-l border-zinc-700">
                   <span className="hidden md:inline">Great Passes</span>
                   <span className="md:hidden">GP</span>
                 </th>
 
-                <th className="text-center py-3">
+                <th className="text-center py-3 border-l border-zinc-700">
                   <span className="hidden md:inline">Hustle</span>
                   <span className="md:hidden">H</span>
                 </th>
 
-                <th className="text-center py-3">
+                <th className="text-center py-3 border-l border-zinc-700">
                   <span className="hidden md:inline">Attitude</span>
                   <span className="md:hidden">ATT</span>
                 </th>
 
-                <th className="text-center py-3">
+                <th className="text-center py-3 border-l border-zinc-700">
                   <span className="hidden md:inline">Sportsmanship</span>
                   <span className="md:hidden">SP</span>
                 </th>
 
-                <th className="text-center py-3">
-                  <span className="hidden md:inline">Penalty</span>
-                  <span className="md:hidden">P</span>
+                <th className="text-center py-3 border-l border-zinc-700">
+                  <span className="hidden md:inline text-red-300">Penalties</span>
+                  <span className="md:hidden text-red-300">P</span>
                 </th>
 
-                <th className="text-center py-3">
-                  <span className="hidden md:inline">Yellow Cards</span>
-                  <span className="md:hidden">YC</span>
+                <th className="text-center py-3 border-l border-zinc-700">
+                  <span className="hidden md:inline text-yellow-400">Yellow Cards</span>
+                  <span className="md:hidden text-yellow-400">YC</span>
                 </th>
 
-                <th className="text-center py-3">
-                  <span className="hidden md:inline">Red Cards</span>
-                  <span className="md:hidden">RC</span>
+                <th className="text-center py-3 border-l border-zinc-700">
+                  <span className="hidden md:inline text-red-400">Red Cards</span>
+                  <span className="md:hidden text-red-400">RC</span>
                 </th>
 
-                <th className="text-center py-3 text-red-400">
-                  <span className="hidden md:inline">
+                <th className="text-center py-3 border-l border-zinc-700 text-green-500">
+                  <span className="hidden md:inline text-green-500 font-bold">
                     Fantasy Pts
                   </span>
                   <span className="md:hidden">FP</span>
@@ -307,57 +307,62 @@ const displayStat = (value: number) =>
               {rows.map((stat) => (
                 <tr
                   key={stat.id}
-                  className="border-b border-zinc-800"
+                  className="
+                    border-b border-zinc-800
+                    odd:bg-zinc-900/20
+                    hover:bg-zinc-800/40
+                    transition-colors
+                  "
                 >
                   <td className="py-3">
                     {stat.players?.name}
                   </td>
 
-                  <td className="text-center">
+                  <td className="text-center border-l border-zinc-800">
                     {displayStat(stat.goals)}
                   </td>
 
-                  <td className="text-center">
+                  <td className="text-center border-l border-zinc-800">
                     {displayStat(stat.assists)}
                   </td>
 
-                  <td className="text-center">
+                  <td className="text-center border-l border-zinc-800">
                     {displayStat(stat.defensive_stops)}
                   </td>
 
-                  <td className="text-center">
+                  <td className="text-center border-l border-zinc-800">
                     {displayStat(stat.goal_saves)}
                   </td>
 
-                  <td className="text-center">
+                  <td className="text-center border-l border-zinc-800">
                     {displayStat(stat.great_passes)}
                   </td>
 
-                  <td className="text-center">
+                  <td className="text-center border-l border-zinc-800">
                     {displayStat(stat.hustle_plays)}
                   </td>
 
-                  <td className="text-center">
+                  <td className="text-center border-l border-zinc-800">
                     {displayStat(stat.positive_attitude)}
                   </td>
 
-                  <td className="text-center">
+                  <td className="text-center border-l border-zinc-800">
                     {displayStat(stat.good_sportsmanship)}
                   </td>
 
-                  <td className="text-center">
+                  <td className="text-center text-red-300 border-l border-zinc-800">
                     {displayStat(stat.penalties)}
                   </td>
 
-                  <td className="text-center">
+                  <td className="text-center text-yellow-400 border-l border-zinc-800">
                     {displayStat(stat.yellow_cards)}
                   </td>
 
-                  <td className="text-center">
+                  <td className="text-center text-red-400 border-l border-zinc-800">
                     {displayStat(stat.red_cards)}
                   </td>
 
-                  <td className="text-center font-bold text-red-400">
+                  <td className="text-center text-green-500 border-l border-zinc-800 font-bold">
                     {displayStat(stat.fantasyPoints)}
                   </td>
                 </tr>
@@ -383,7 +388,7 @@ const displayStat = (value: number) =>
               <div><span className="font-bold text-red-300">P</span> = Penalties Committed</div>
               <div><span className="font-bold text-yellow-400">YC</span> = Yellow Cards</div>
               <div><span className="font-bold text-red-400">RC</span> = Red Cards</div>
-              <div><span className="font-bold text-red-500">FP</span> = Fantasy Points</div>
+              <div><span className="font-bold text-green-500">FP</span> = Fantasy Points</div>
             </div>
           </div>
         </div>

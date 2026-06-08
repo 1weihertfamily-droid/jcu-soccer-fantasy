@@ -261,18 +261,68 @@ useEffect(() => {
                 <th className="sticky left-0 bg-black text-left p-2 min-w-[160px] z-40">
                   Player
                 </th>
+                <th className="w-24 text-center">
+                  <span className="hidden md:inline">Goals</span>
+                  <span className="md:hidden">G</span>
+                </th>
 
-                <th className="w-24 text-center">G</th>
-                <th className="w-24 text-center">A</th>
-                <th className="w-24 text-center">D</th>
-                <th className="w-24 text-center">S</th>
-                <th className="w-24 text-center">GP</th>
-                <th className="w-24 text-center">H</th>
-                <th className="w-24 text-center">Att</th>
-                <th className="w-24 text-center">Sp</th>
-                <th className="w-24 text-center">P</th>
-                <th className="w-24 text-center">YC</th>
-                <th className="w-24 text-center">RC</th>
+                <th className="w-24 text-center">
+                  <span className="hidden md:inline">Assists</span>
+                  <span className="md:hidden">A</span>
+                </th>
+
+                <th className="w-24 text-center">
+                  <span className="hidden md:inline">Stops</span>
+                  <span className="md:hidden">D</span>
+                </th>
+
+                <th className="w-24 text-center">
+                  <span className="hidden md:inline">Saves</span>
+                  <span className="md:hidden">S</span>
+                </th>
+
+                <th className="w-24 text-center">
+                  <span className="hidden md:inline">Great Passes</span>
+                  <span className="md:hidden">GP</span>
+                </th>
+
+                <th className="w-24 text-center">
+                  <span className="hidden md:inline">Hustle</span>
+                  <span className="md:hidden">H</span>
+                </th>
+
+                <th className="w-24 text-center">
+                  <span className="hidden md:inline">Attitude</span>
+                  <span className="md:hidden">ATT</span>
+                </th>
+
+                <th className="w-24 text-center">
+                  <span className="hidden md:inline">Sportsmanship</span>
+                  <span className="md:hidden">SP</span>
+                </th>
+
+                <th className="w-24 text-center">
+                  <span className="hidden md:inline text-red-300">Penalties</span>
+                  <span className="md:hidden text-red-300">P</span>
+                </th>
+
+                <th className="w-24 text-center">
+                  <span className="hidden md:inline text-yellow-400">
+                    Yellow Cards
+                  </span>
+                  <span className="md:hidden text-yellow-400">
+                    YC
+                  </span>
+                </th>
+
+                <th className="w-24 text-center">
+                  <span className="hidden md:inline text-red-400">
+                    Red Cards
+                  </span>
+                  <span className="md:hidden text-red-400">
+                    RC
+                  </span>
+                </th>
               </tr>
             </thead>
 
@@ -417,84 +467,20 @@ useEffect(() => {
           </h3>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm text-zinc-300">
-            <div>
-              <span className="font-bold text-white">
-                Goals
-              </span>
-              {" "} = Goals Scored
-            </div>
+            <div><span className="font-bold text-white">G</span> = Goals Scored</div>
+            <div><span className="font-bold text-white">A</span> = Assists</div>
+            <div><span className="font-bold text-white">D</span> = Defensive Stops</div>
+            <div><span className="font-bold text-white">S</span> = Goalkeeper Saves</div>
 
-            <div>
-              <span className="font-bold text-white">
-                Assists
-              </span>
-              {" "} = Assists
-            </div>
+            <div><span className="font-bold text-white">GP</span> = Great Passes</div>
+            <div><span className="font-bold text-white">H</span> = Hustle Plays</div>
+            <div><span className="font-bold text-white">ATT</span> = Positive Attitude</div>
+            <div><span className="font-bold text-white">SP</span> = Good Sportsmanship</div>
 
-            <div>
-              <span className="font-bold text-white">
-                Stops
-              </span>
-              {" "} = Defensive Stops
-            </div>
-
-            <div>
-              <span className="font-bold text-white">
-                Saves
-              </span>
-              {" "} = Goalkeeper Saves
-            </div>
-
-            <div>
-              <span className="font-bold text-white">
-                Great Passes
-              </span>
-              {" "} = Key Passes
-            </div>
-
-            <div>
-              <span className="font-bold text-white">
-                Hustle
-              </span>
-              {" "} = Hustle Plays
-            </div>
-
-            <div>
-              <span className="font-bold text-white">
-                Attitude
-              </span>
-              {" "} = Positive Attitude
-            </div>
-
-            <div>
-              <span className="font-bold text-white">
-                Sportsmanship
-              </span>
-              {" "} = Good Sportsmanship
-            </div>
-
-            <div>
-              <span className="font-bold text-red-300">
-                Penalties
-              </span>
-              {" "} = Penalties Committed
-            </div>
-
-            <div>
-              <span className="font-bold text-yellow-400">
-                YC
-              </span>
-              {" "} = Yellow Cards
-            </div>
-
-            <div>
-              <span className="font-bold text-red-400">
-                RC
-              </span>
-              {" "} = Red Cards
-            </div>
-
-            
+            <div><span className="font-bold text-red-300">P</span> = Penalties Committed</div>
+            <div><span className="font-bold text-yellow-400">YC</span> = Yellow Cards</div>
+            <div><span className="font-bold text-red-400">RC</span> = Red Cards</div>
+            <div><span className="font-bold text-red-500">FP</span> = Fantasy Points</div>
           </div>
         </div>
 
