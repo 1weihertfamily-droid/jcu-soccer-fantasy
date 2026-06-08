@@ -20,7 +20,7 @@ export default function AdminDashboard() {
       title: "Stats",
       description:
         "Enter and edit player stats.",
-      href: "/admin",
+      href: "/admin/stats",
       emoji: "📊",
     },
     {
