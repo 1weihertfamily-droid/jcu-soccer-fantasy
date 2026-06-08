@@ -235,29 +235,47 @@ export default async function GamePage({
                 <th className="text-left py-3">
                   Player
                 </th>
+
                 <th className="text-center py-3">
-                  Goals
+                  <span className="hidden md:inline">Goals</span>
+                  <span className="md:hidden">G</span>
                 </th>
+
                 <th className="text-center py-3">
-                  Assists
+                  <span className="hidden md:inline">Assists</span>
+                  <span className="md:hidden">A</span>
                 </th>
+
                 <th className="text-center py-3">
-                  Stops
+                  <span className="hidden md:inline">Stops</span>
+                  <span className="md:hidden">D</span>
                 </th>
+
                 <th className="text-center py-3">
-                  Great Passes
+                  <span className="hidden md:inline">Great Passes</span>
+                  <span className="md:hidden">GP</span>
                 </th>
+
                 <th className="text-center py-3">
-                  Hustle
+                  <span className="hidden md:inline">Hustle</span>
+                  <span className="md:hidden">H</span>
                 </th>
+
                 <th className="text-center py-3">
-                  Attitude
+                  <span className="hidden md:inline">Attitude</span>
+                  <span className="md:hidden">ATT</span>
                 </th>
+
                 <th className="text-center py-3">
-                  Sportsmanship
+                  <span className="hidden md:inline">Sportsmanship</span>
+                  <span className="md:hidden">SP</span>
                 </th>
+
                 <th className="text-center py-3 text-red-400">
-                  Fantasy Pts
+                  <span className="hidden md:inline">
+                    Fantasy Pts
+                  </span>
+                  <span className="md:hidden">FP</span>
                 </th>
               </tr>
             </thead>
@@ -307,6 +325,22 @@ export default async function GamePage({
               ))}
             </tbody>
           </table>
+          <div className="mt-4 text-sm text-zinc-400">
+            <p>
+              <strong>Legend:</strong>
+            </p>
+
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
+              <span>G = Goals</span>
+              <span>A = Assists</span>
+              <span>D = Defensive Stops</span>
+              <span>GP = Great Passes</span>
+              <span>H = Hustle Plays</span>
+              <span>ATT = Positive Attitude</span>
+              <span>SP = Sportsmanship</span>
+              <span>FP = Fantasy Points</span>
+            </div>
+          </div>
         </div>
       )}
     </main>
