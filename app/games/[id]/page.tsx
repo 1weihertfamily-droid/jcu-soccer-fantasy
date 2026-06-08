@@ -127,6 +127,9 @@ export default async function GamePage({
   const defenseWinner =
     getWinner("unstoppable_defense");
 
+const displayStat = (value: number) =>
+  value > 0 ? value : "";
+
   return (
     <main className="min-h-screen bg-black text-white p-8">
       <h1 className="text-4xl font-bold mb-6">
@@ -291,35 +294,35 @@ export default async function GamePage({
                   </td>
 
                   <td className="text-center">
-                    {stat.goals}
+                    {displayStat(stat.goals)}
                   </td>
 
                   <td className="text-center">
-                    {stat.assists}
+                    {displayStat(stat.assists)}
                   </td>
 
                   <td className="text-center">
-                    {stat.defensive_stops}
+                    {displayStat(stat.defensive_stops)}
                   </td>
 
                   <td className="text-center">
-                    {stat.great_passes}
+                    {displayStat(stat.great_passes)}
                   </td>
 
                   <td className="text-center">
-                    {stat.hustle_plays}
+                    {displayStat(stat.hustle_plays)}
                   </td>
 
                   <td className="text-center">
-                    {stat.positive_attitude}
+                    {displayStat(stat.positive_attitude)}
                   </td>
 
                   <td className="text-center">
-                    {stat.good_sportsmanship}
+                    {displayStat(stat.good_sportsmanship)}
                   </td>
 
                   <td className="text-center font-bold text-red-400">
-                    {stat.fantasyPoints}
+                    {displayStat(stat.fantasyPoints)}
                   </td>
                 </tr>
               ))}
@@ -334,10 +337,14 @@ export default async function GamePage({
               <span>G = Goals</span>
               <span>A = Assists</span>
               <span>D = Defensive Stops</span>
+              <span>S = Goal Saves</span>
               <span>GP = Great Passes</span>
               <span>H = Hustle Plays</span>
               <span>ATT = Positive Attitude</span>
               <span>SP = Sportsmanship</span>
+              <span>P = Penalties</span>
+              <span>YC = Yellow Cards</span>
+              <span>RC = Red Cards</span>
               <span>FP = Fantasy Points</span>
             </div>
           </div>
