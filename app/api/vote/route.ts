@@ -6,26 +6,32 @@ export async function POST(req: Request) {
     const {
       gameId,
       voterName,
-      goat,
-      hardestWorker,
-      unstoppableDefense,
+      goatVotes,
+      hardestWorkerVotes,
+      unstoppableDefenseVotes,
     } = await req.json();
-        console.log("VOTE REQUEST:", {
-        gameId,
-        voterName,
-        goat,
-        hardestWorker,
-        unstoppableDefense,
-        });
-    const selections = [
-      goat,
-      hardestWorker,
-      unstoppableDefense,
+
+    console.log("VOTE REQUEST:", {
+      gameId,
+      voterName,
+      goatVotes,
+      hardestWorkerVotes,
+      unstoppableDefenseVotes,
+    });
+
+    const allSelections = [
+      ...goatVotes,
+      ...hardestWorkerVotes,
+      ...unstoppableDefenseVotes,
     ];
 
-    const uniqueSelections = new Set(selections);
+    const uniqueSelections =
+      new Set(allSelections);
 
-    if (uniqueSelections.size !== 3) {
+    if (
+      uniqueSelections.size !==
+      allSelections.length
+    ) {
       return NextResponse.json(
         {
           error:
@@ -35,52 +41,76 @@ export async function POST(req: Request) {
       );
     }
 
-    const { data: ballot, error: ballotError } =
-      await supabaseAdmin
-        .from("ballots")
-        .insert({
-          game_id: gameId,
-          voter_name: voterName,
-        })
-        .select()
-        .single();
+    const {
+      data: ballot,
+      error: ballotError,
+    } = await supabaseAdmin
+      .from("ballots")
+      .insert({
+        game_id: gameId,
+        voter_name: voterName,
+      })
+      .select()
+      .single();
 
     if (ballotError) {
-        console.log("BALLOT ERROR:", ballotError);
+      console.log(
+        "BALLOT ERROR:",
+        ballotError
+      );
 
-        return NextResponse.json(
-            {
-            error: ballotError.message,
-            details: ballotError,
-            },
-            { status: 500 }
-        );
-        }
+      return NextResponse.json(
+        {
+          error: ballotError.message,
+          details: ballotError,
+        },
+        { status: 500 }
+      );
+    }
+
+    const votes = [
+      ...goatVotes.map(
+        (playerId: number) => ({
+          ballot_id: ballot.id,
+          player_id: playerId,
+          category: "goat",
+        })
+      ),
+
+      ...hardestWorkerVotes.map(
+        (playerId: number) => ({
+          ballot_id: ballot.id,
+          player_id: playerId,
+          category:
+            "hardest_worker",
+        })
+      ),
+
+      ...unstoppableDefenseVotes.map(
+        (playerId: number) => ({
+          ballot_id: ballot.id,
+          player_id: playerId,
+          category:
+            "unstoppable_defense",
+        })
+      ),
+    ];
 
     const { error: voteError } =
       await supabaseAdmin
         .from("ballot_votes")
-        .insert([
-          {
-            ballot_id: ballot.id,
-            player_id: goat,
-            category: "goat",
-          },
-          {
-            ballot_id: ballot.id,
-            player_id: hardestWorker,
-            category: "hardest_worker",
-          },
-          {
-            ballot_id: ballot.id,
-            player_id: unstoppableDefense,
-            category: "unstoppable_defense",
-          },
-        ]);
+        .insert(votes);
 
     if (voteError) {
+      console.log(
+        "VOTE ERROR:",
+        voteError
+      );
+
       return NextResponse.json(
-        { error: voteError.message },
+        {
+          error: voteError.message,
+        },
         { status: 500 }
       );
     }

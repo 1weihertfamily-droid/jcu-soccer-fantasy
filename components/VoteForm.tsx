@@ -18,60 +18,84 @@ export default function VoteForm({
 }: Props) {
   const [voterName, setVoterName] = useState("");
 
-  const [goat, setGoat] = useState("");
-  const [hardestWorker, setHardestWorker] =
-    useState("");
-  const [unstoppableDefense, setUnstoppableDefense] =
-    useState("");
+  const [goatVotes, setGoatVotes] = useState([
+  "",
+  "",
+  "",
+]);
+
+const [workerVotes, setWorkerVotes] =
+  useState(["", "", ""]);
+
+const [defenseVotes, setDefenseVotes] =
+  useState(["", "", ""]);
+
+  const allSelections = [
+  ...goatVotes,
+  ...workerVotes,
+  ...defenseVotes,
+].filter(Boolean);
+
+function getAvailablePlayers(
+  currentValue: string
+) {
+  return players.filter(
+    (player) =>
+      String(player.id) === currentValue ||
+      !allSelections.includes(
+        String(player.id)
+      )
+  );
+}
 
   const [submitted, setSubmitted] =
     useState(false);
 
-  const goatOptions = players.filter(
-    (player) =>
-      String(player.id) !== hardestWorker &&
-      String(player.id) !== unstoppableDefense
-  );
+function hasDuplicates(
+  votes: string[]
+) {
+  const filled = votes.filter(Boolean);
 
-  const hardestWorkerOptions = players.filter(
-    (player) =>
-      String(player.id) !== goat &&
-      String(player.id) !== unstoppableDefense
+  return (
+    new Set(filled).size !==
+    filled.length
   );
-
-  const defenseOptions = players.filter(
-    (player) =>
-      String(player.id) !== goat &&
-      String(player.id) !== hardestWorker
-  );
+}
 
   async function handleSubmit() {
-    if (!voterName.trim()) {
+    console.log({
+  goatVotes,
+  workerVotes,
+  defenseVotes,
+});
+if (!voterName.trim()) {
       alert("Please enter your name.");
       return;
     }
 
     if (
-      !goat ||
-      !hardestWorker ||
-      !unstoppableDefense
-    ) {
-      alert(
-        "Please make all three selections."
-      );
-      return;
-    }
+  goatVotes.some((v) => !v) ||
+  workerVotes.some((v) => !v) ||
+  defenseVotes.some((v) => !v)
+) {
+  alert(
+    "Please select 3 players in every category."
+  );
+  return;
+} 
 
-    if (
-      goat === hardestWorker ||
-      goat === unstoppableDefense ||
-      hardestWorker === unstoppableDefense
-    ) {
-      alert(
-        "A player may only be selected once."
-      );
-      return;
-    }
+const uniqueSelections =
+  new Set(allSelections);
+
+if (
+  uniqueSelections.size !==
+  allSelections.length
+) {
+  alert(
+    "Each player may only be selected once on the ballot."
+  );
+  return;
+} 
 
     const res = await fetch("/api/vote", {
       method: "POST",
@@ -79,14 +103,17 @@ export default function VoteForm({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        gameId,
-        voterName,
-        goat: Number(goat),
-        hardestWorker:
-          Number(hardestWorker),
-        unstoppableDefense:
-          Number(unstoppableDefense),
-      }),
+  gameId,
+  voterName,
+  goatVotes:
+    goatVotes.map(Number),
+
+  hardestWorkerVotes:
+    workerVotes.map(Number),
+
+  unstoppableDefenseVotes:
+    defenseVotes.map(Number),
+}),
     });
 
     const data = await res.json();
@@ -134,91 +161,127 @@ export default function VoteForm({
       </div>
 
       <div>
-        <label className="block mb-2 font-semibold">
-          🏆 GOAT
-        </label>
+  <label className="block mb-2 font-semibold">
+    🏆 GOAT
+  </label>
 
-        <select
-          value={goat}
-          onChange={(e) =>
-            setGoat(e.target.value)
-          }
-          className="w-full p-3 rounded bg-zinc-900 border border-zinc-700"
-        >
-          <option value="">
-            Select Player
+  <div className="space-y-2">
+    {[0, 1, 2].map((index) => (
+      <select
+        key={index}
+        value={goatVotes[index]}
+        onChange={(e) => {
+          const updated = [
+            ...goatVotes,
+          ];
+
+          updated[index] =
+            e.target.value;
+
+          setGoatVotes(updated);
+        }}
+        className="w-full p-3 rounded bg-zinc-900 border border-zinc-700"
+      >
+        <option value="">
+          Select Player
+        </option>
+
+        {getAvailablePlayers(
+    goatVotes[index]
+      ).map((player) => (
+          <option
+            key={player.id}
+            value={player.id}
+          >
+            {player.name}
           </option>
-
-          {goatOptions.map((player) => (
-            <option
-              key={player.id}
-              value={player.id}
-            >
-              {player.name}
-            </option>
-          ))}
-        </select>
-      </div>
+        ))}
+      </select>
+    ))}
+  </div>
+</div>
 
       <div>
-        <label className="block mb-2 font-semibold">
-          🔥 Hardest Worker
-        </label>
+  <label className="block mb-2 font-semibold">
+    🔥 Hardest Worker
+  </label>
 
-        <select
-          value={hardestWorker}
-          onChange={(e) =>
-            setHardestWorker(
-              e.target.value
-            )
-          }
-          className="w-full p-3 rounded bg-zinc-900 border border-zinc-700"
-        >
-          <option value="">
-            Select Player
+  <div className="space-y-2">
+    {[0, 1, 2].map((index) => (
+      <select
+        key={index}
+        value={workerVotes[index]}
+        onChange={(e) => {
+          const updated = [
+            ...workerVotes,
+          ];
+
+          updated[index] =
+            e.target.value;
+
+          setWorkerVotes(updated);
+        }}
+        className="w-full p-3 rounded bg-zinc-900 border border-zinc-700"
+      >
+        <option value="">
+          Select Player
+        </option>
+
+        {getAvailablePlayers(
+          workerVotes[index]
+        ).map((player) => (
+          <option
+            key={player.id}
+            value={player.id}
+          >
+            {player.name}
           </option>
-
-          {hardestWorkerOptions.map(
-            (player) => (
-              <option
-                key={player.id}
-                value={player.id}
-              >
-                {player.name}
-              </option>
-            )
-          )}
-        </select>
-      </div>
+        ))}
+      </select>
+    ))}
+  </div>
+</div>
 
       <div>
-        <label className="block mb-2 font-semibold">
-          🛡️ Unstoppable Defense
-        </label>
+  <label className="block mb-2 font-semibold">
+    🛡️ Unstoppable Defense
+  </label>
 
-        <select
-          value={unstoppableDefense}
-          onChange={(e) =>
-            setUnstoppableDefense(
-              e.target.value
-            )
-          }
-          className="w-full p-3 rounded bg-zinc-900 border border-zinc-700"
-        >
-          <option value="">
-            Select Player
+  <div className="space-y-2">
+    {[0, 1, 2].map((index) => (
+      <select
+        key={index}
+        value={defenseVotes[index]}
+        onChange={(e) => {
+          const updated = [
+            ...defenseVotes,
+          ];
+
+          updated[index] =
+            e.target.value;
+
+          setDefenseVotes(updated);
+        }}
+        className="w-full p-3 rounded bg-zinc-900 border border-zinc-700"
+      >
+        <option value="">
+          Select Player
+        </option>
+
+        {getAvailablePlayers(
+            defenseVotes[index]
+          ).map((player) => (
+          <option
+            key={player.id}
+            value={player.id}
+          >
+            {player.name}
           </option>
-
-          {defenseOptions.map((player) => (
-            <option
-              key={player.id}
-              value={player.id}
-            >
-              {player.name}
-            </option>
-          ))}
-        </select>
-      </div>
+        ))}
+      </select>
+    ))}
+  </div>
+</div>
 
       <button
         onClick={handleSubmit}
