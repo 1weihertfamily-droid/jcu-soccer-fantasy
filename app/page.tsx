@@ -329,7 +329,7 @@ const ballotIds =
           <div className="flex justify-end mt-8">
             <Link
               href="/admin"
-              className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
+              className="bg-zinc-600 hover:bg-red-600 px-4 py-2 rounded"
             >
               Admin
             </Link>

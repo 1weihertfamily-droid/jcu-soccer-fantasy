@@ -221,7 +221,7 @@ useEffect(() => {
 
             <Link
             href="/admin"
-            className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded"
+            className="bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded"
             >
             ← Back to Dashboard
             </Link>
@@ -261,52 +261,52 @@ useEffect(() => {
                 <th className="sticky left-0 bg-black text-left p-2 z-40 whitespace-nowrap">
                   Player
                 </th>
-                <th className="w-12 md:w-15 text-center">
+                <th className="w-12 md:w-12 text-center">
                   <span className="hidden md:inline">Goals</span>
                   <span className="md:hidden">G</span>
                 </th>
 
-                <th className="w-12 md:w-15 text-center">
+                <th className="w-12 md:w-12 text-center">
                   <span className="hidden md:inline">Assists</span>
                   <span className="md:hidden">A</span>
                 </th>
 
-                <th className="w-12 md:w-15 text-center">
+                <th className="w-12 md:w-12 text-center">
                   <span className="hidden md:inline">Stops</span>
                   <span className="md:hidden">D</span>
                 </th>
 
-                <th className="w-12 md:w-15 text-center">
+                <th className="w-12 md:w-12 text-center">
                   <span className="hidden md:inline">Saves</span>
                   <span className="md:hidden">S</span>
                 </th>
 
-                <th className="w-12 md:w-15 text-center">
+                <th className="w-12 md:w-12 text-center">
                   <span className="hidden md:inline">Great Passes</span>
                   <span className="md:hidden">GP</span>
                 </th>
 
-                <th className="w-12 md:w-15 text-center">
+                <th className="w-12 md:w-12 text-center">
                   <span className="hidden md:inline">Hustle</span>
                   <span className="md:hidden">H</span>
                 </th>
 
-                <th className="w-12 md:w-15 text-center">
+                <th className="w-12 md:w-12 text-center">
                   <span className="hidden md:inline">Attitude</span>
                   <span className="md:hidden">ATT</span>
                 </th>
 
-                <th className="w-12 md:w-15 text-center">
+                <th className="w-12 md:w-12 text-center">
                   <span className="hidden md:inline">Sportsmanship</span>
                   <span className="md:hidden">SP</span>
                 </th>
 
-                <th className="w-12 md:w-15 text-center">
+                <th className="w-12 md:w-12 text-center">
                   <span className="hidden md:inline text-red-300">Penalties</span>
                   <span className="md:hidden text-red-300">P</span>
                 </th>
 
-                <th className="w-12 md:w-15 text-center">
+                <th className="w-12 md:w-12 text-center">
                   <span className="hidden md:inline text-yellow-400">
                     Yellow Cards
                   </span>
@@ -315,7 +315,7 @@ useEffect(() => {
                   </span>
                 </th>
 
-                <th className="w-12 md:w-15 text-center">
+                <th className="w-12 md:w-12 text-center">
                   <span className="hidden md:inline text-red-400">
                     Red Cards
                   </span>

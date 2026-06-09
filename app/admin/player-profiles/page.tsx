@@ -19,9 +19,9 @@ export default async function PlayerProfilesAdminPage() {
 
           <Link
             href="/admin"
-            className="bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded"
+            className="bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded"
           >
-            ← Back to Admin
+            ← Back to Dashboard
           </Link>
         </div>
 

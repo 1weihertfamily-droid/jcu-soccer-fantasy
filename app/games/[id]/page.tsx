@@ -258,14 +258,14 @@ const displayStat = (value: number) =>
       <div className="flex gap-4 mb-8">
         <Link
           href={`/vote/${id}`}
-          className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-3 rounded-lg transition"
+          className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg transition"
         >
           Vote For Awards
         </Link>
 
         <Link
           href="/"
-          className="bg-zinc-700 hover:bg-zinc-600 text-white px-6 py-3 rounded-lg transition"
+          className="bg-blue-600 hover:bg-blue-800 text-white px-6 py-3 rounded-lg transition"
         >
           ← Back to Home
         </Link>
