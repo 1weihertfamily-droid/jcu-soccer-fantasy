@@ -27,7 +27,7 @@ export default function AdminDashboard() {
       title: "Awards",
       description:
         "Review voting and game awards.",
-      href: "/games",
+      href: "/awards",
       emoji: "🏆",
     },
     {
