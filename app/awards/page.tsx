@@ -5,6 +5,7 @@ import Link from "next/link";
 
 type AwardPlayer = {
   playerName: string;
+  playerId: string;
   votes: number;
 };
 
@@ -102,21 +103,15 @@ export default function AwardsPage() {
                           index
                         ] ? (
                           <>
-                            {
-                              game.goat[
-                                index
-                              ]
-                                .playerName
-                            }
+                            <Link
+                                href={`/players/${game.goat[index].playerId}`}
+                                className="hover:text-blue-400 hover:underline"
+                            >
+                                {game.goat[index].playerName}
+                            </Link>
                             {" "}
-                            (
-                            {
-                              game.goat[
-                                index
-                              ].votes
-                            }
-                            )
-                          </>
+                            ({game.goat[index].votes})
+                            </>
                         ) : (
                           "-"
                         )}
@@ -128,23 +123,15 @@ export default function AwardsPage() {
                           index
                         ] ? (
                           <>
-                            {
-                              game
-                                .hardestWorker[
-                                index
-                              ]
-                                .playerName
-                            }
+                            <Link
+                                href={`/players/${game.hardestWorker[index].playerId}`}
+                                className="hover:text-blue-400 hover:underline"
+                            >
+                                {game.hardestWorker[index].playerName}
+                            </Link>
                             {" "}
-                            (
-                            {
-                              game
-                                .hardestWorker[
-                                index
-                              ].votes
-                            }
-                            )
-                          </>
+                            ({game.hardestWorker[index].votes})
+                            </>
                         ) : (
                           "-"
                         )}
@@ -156,23 +143,15 @@ export default function AwardsPage() {
                           index
                         ] ? (
                           <>
-                            {
-                              game
-                                .defense[
-                                index
-                              ]
-                                .playerName
-                            }
+                            <Link
+                                href={`/players/${game.defense[index].playerId}`}
+                                className="hover:text-blue-400 hover:underline"
+                            >
+                                {game.defense[index].playerName}
+                            </Link>
                             {" "}
-                            (
-                            {
-                              game
-                                .defense[
-                                index
-                              ].votes
-                            }
-                            )
-                          </>
+                            ({game.defense[index].votes})
+                            </>
                         ) : (
                           "-"
                         )}

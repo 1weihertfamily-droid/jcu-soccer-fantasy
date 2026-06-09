@@ -315,7 +315,12 @@ const displayStat = (value: number) =>
                   "
                 >
                   <td className="py-3">
-                    {stat.players?.name}
+                    <Link
+                      href={`/players/${stat.player_id}`}
+                      className="hover:text-blue-400 hover:underline"
+                    >
+                      {stat.players?.name}
+                    </Link>
                   </td>
 
                   <td className="text-center border-l border-zinc-800">

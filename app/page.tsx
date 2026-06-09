@@ -39,7 +39,7 @@ export default async function Home() {
     scoring
   );
 
-    // ---------------------------
+  // ---------------------------
   // Homepage Awards
   // ---------------------------
 
@@ -176,7 +176,12 @@ const ballotIds =
                   </td>
 
                   <td className="py-3">
-                    {player.name}
+                    <Link
+                      href={`/players/${player.id}`}
+                      className="hover:text-blue-400 hover:underline"
+                    >
+                      {player.name}
+                    </Link>
                   </td>
 
                   <td className="py-3 text-right">
