@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function middleware(
+export function proxy(
   request: NextRequest
 ) {
   const adminCookie =
@@ -10,15 +10,14 @@ export function middleware(
     )?.value;
 
   const pathname =
-  request.nextUrl.pathname;
+    request.nextUrl.pathname;
 
   const isAdminRoute =
     pathname === "/admin" ||
     pathname.startsWith("/admin/");
 
   const isLoginPage =
-    request.nextUrl.pathname ===
-    "/admin-login";
+    pathname === "/admin-login";
 
   if (
     isAdminRoute &&
@@ -49,6 +48,7 @@ export function middleware(
 
 export const config = {
   matcher: [
+    "/admin",
     "/admin/:path*",
     "/admin-login",
   ],
