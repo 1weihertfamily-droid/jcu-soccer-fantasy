@@ -23,19 +23,21 @@ export default function AdminDashboard() {
       href: "/admin/stats",
       emoji: "📊",
     },
-    {
-      title: "Awards",
-      description:
-        "Review voting and game awards.",
-      href: "/awards",
-      emoji: "🏆",
-    },
+    
     {
       title: "Public Site",
       description:
         "View the public-facing application.",
       href: "/",
       emoji: "🌎",
+    },
+
+    {
+      title: "Awards",
+      description:
+        "Review voting and game awards.",
+      href: "/awards",
+      emoji: "🏆",
     },
 
     {

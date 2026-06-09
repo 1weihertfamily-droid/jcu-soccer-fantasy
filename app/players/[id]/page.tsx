@@ -251,9 +251,9 @@ export default async function PlayerPage({
         <div className="mb-6">
             <Link
                 href="/admin/player-profiles"
-                className="inline-block bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded"
+                className="inline-block bg-red-500 hover:bg-zinc-600 px-4 py-2 rounded"
             >
-                ← Back to Admin -Player Preview
+                ← Back to Admin - Player Preview
             </Link>
         </div>
       </div>
