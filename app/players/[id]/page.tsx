@@ -253,7 +253,7 @@ export default async function PlayerPage({
                 href="/admin/player-profiles"
                 className="inline-block bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded"
             >
-                ← Back to Player Preview
+                ← Back to Admin -Player Preview
             </Link>
         </div>
       </div>
