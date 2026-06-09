@@ -175,14 +175,19 @@ async function clearGameStats(gameId: number) {
   return (
     <main className="min-h-screen bg-black text-white p-8">
       <div className="max-w-5xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <h1 className="text-4xl font-bold">
             Manage Games
           </h1>
 
           <Link
             href="/admin"
-            className="bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded"
+            className="
+              bg-blue-600 hover:bg-blue-800
+              px-4 py-2 rounded
+              text-center
+              w-full sm:w-auto
+            "
           >
             ← Back to Dashboard
           </Link>
@@ -193,7 +198,7 @@ async function clearGameStats(gameId: number) {
             Add Game
           </h2>
 
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <input
               value={newGame}
               onChange={(e) =>
@@ -205,7 +210,11 @@ async function clearGameStats(gameId: number) {
 
             <button
               onClick={addGame}
-              className="bg-green-600 hover:bg-green-700 px-5 rounded font-semibold"
+              className="
+                bg-green-600 hover:bg-green-700
+                px-5 py-3 rounded font-semibold
+                w-full sm:w-auto
+              "
             >
               Add
             </button>
@@ -305,23 +314,37 @@ async function clearGameStats(gameId: number) {
                     />
                   </td>
 
-                  <td className="text-center">
-                    <button
-                      onClick={() => resetVoting(game.id)}
-                      className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded text-sm font-semibold"
-                    >
-                      Reset Voting
-                    </button>
-                  </td>
+                    <td className="text-center p-2">
+                      <button
+                        onClick={() => resetVoting(game.id)}
+                        className="
+                          bg-red-600 hover:bg-red-700
+                          px-3 py-2 rounded
+                          text-sm font-semibold
+                          w-full
+                          whitespace-normal
+                          leading-tight
+                        "
+                      >
+                        Reset Voting
+                      </button>
+                    </td>
 
-                  <td className="text-center">
-                    <button
-                      onClick={() => clearGameStats(game.id)}
-                      className="bg-orange-600 hover:bg-orange-700 px-3 py-2 rounded text-sm font-semibold"
-                    >
-                      Clear Stats
-                    </button>
-                  </td>
+                    <td className="text-center p-2">
+                      <button
+                        onClick={() => clearGameStats(game.id)}
+                        className="
+                          bg-orange-600 hover:bg-orange-700
+                          px-3 py-2 rounded
+                          text-sm font-semibold
+                          w-full
+                          whitespace-normal
+                          leading-tight
+                        "
+                      >
+                        Clear Stats
+                      </button>
+                    </td>
                 </tr>
               ))}
             </tbody>

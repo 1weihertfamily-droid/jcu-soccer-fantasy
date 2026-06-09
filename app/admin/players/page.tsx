@@ -85,14 +85,19 @@ export default function AdminPlayersPage() {
   return (
     <main className="min-h-screen bg-black text-white p-8">
       <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <h1 className="text-4xl font-bold">
             Manage Players
           </h1>
 
           <Link
             href="/admin"
-            className="bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded"
+            className="
+              bg-blue-600 hover:bg-blue-800
+              px-4 py-2 rounded
+              text-center
+              w-full sm:w-auto
+            "
           >
             ← Back to Dashboard
           </Link>
@@ -103,7 +108,7 @@ export default function AdminPlayersPage() {
             Add Player
           </h2>
 
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <input
               value={newPlayer}
               onChange={(e) =>
@@ -115,7 +120,11 @@ export default function AdminPlayersPage() {
 
             <button
               onClick={addPlayer}
-              className="bg-green-600 hover:bg-green-700 px-5 rounded font-semibold"
+              className="
+                bg-green-600 hover:bg-green-700
+                px-5 py-3 rounded font-semibold
+                w-full sm:w-auto
+              "
             >
               Add
             </button>
