@@ -80,52 +80,59 @@ export default async function GamePage({
     ])
   );
 
-  function getWinner(category: string) {
-    const categoryVotes =
-      votes?.filter(
-        (vote) => vote.category === category
-      ) ?? [];
+  function getWinners(category: string) {
+  const categoryVotes =
+    votes?.filter(
+      (vote) => vote.category === category
+    ) ?? [];
 
-    const counts = new Map<
-      number,
-      {
-        name: string;
-        votes: number;
-      }
-    >();
+  const counts = new Map<
+    number,
+    {
+      name: string;
+      votes: number;
+    }
+  >();
 
-    categoryVotes.forEach((vote: any) => {
-      const existing = counts.get(
-        vote.player_id
-      );
+  categoryVotes.forEach((vote: any) => {
+    const existing = counts.get(
+      vote.player_id
+    );
 
-      if (existing) {
-        existing.votes += 1;
-      } else {
-        counts.set(vote.player_id, {
-          name:
-            playerMap.get(vote.player_id) ??
-            "Unknown Player",
-          votes: 1,
-        });
-      }
-    });
+    if (existing) {
+      existing.votes += 1;
+    } else {
+      counts.set(vote.player_id, {
+        name:
+          playerMap.get(vote.player_id) ??
+          "Unknown Player",
+        votes: 1,
+      });
+    }
+  });
 
-    const winner = [...counts.values()].sort(
-      (a, b) => b.votes - a.votes
-    )[0];
+  const sorted = [...counts.values()].sort(
+    (a, b) => b.votes - a.votes
+  );
 
-    return winner;
-  }
+  if (!sorted.length) return [];
 
-  const goatWinner =
-    getWinner("goat");
+  const topVotes = sorted[0].votes;
 
-  const workerWinner =
-    getWinner("hardest_worker");
+  return sorted.filter(
+    (player) =>
+      player.votes === topVotes
+  );
+}
 
-  const defenseWinner =
-    getWinner("unstoppable_defense");
+const goatWinners =
+  getWinners("goat");
+
+const workerWinners =
+  getWinners("hardest_worker");
+
+const defenseWinners =
+  getWinners("unstoppable_defense");
 
 const displayStat = (value: number) =>
   value > 0 ? value : "";
@@ -136,81 +143,117 @@ const displayStat = (value: number) =>
         {game?.name}
       </h1>
 
-      {/* Awards */}
+{/* Awards */}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-        <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-5">
-          <div className="text-3xl mb-2">
-            🏆
-          </div>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+  <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-5">
+    <div className="text-3xl mb-2">
+      🏆
+    </div>
 
-          <h2 className="font-bold text-lg">
-            GOAT
-          </h2>
+    <h2 className="font-bold text-lg">
+      GOAT
+    </h2>
 
-          <p className="mt-2">
-            {goatWinner?.name ??
-              "No votes yet"}
-          </p>
-
-          {goatWinner && (
-            <p className="text-sm text-zinc-400">
-              {goatWinner.votes} vote
-              {goatWinner.votes !== 1
-                ? "s"
-                : ""}
-            </p>
-          )}
+    {goatWinners?.length ? (
+      <>
+        <div className="mt-2 font-semibold">
+          {goatWinners.map((player) => (
+            <div key={player.name}>
+              {player.name}
+            </div>
+          ))}
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-5">
-          <div className="text-3xl mb-2">
-            🔥
-          </div>
+        <p className="text-sm text-zinc-400 mt-2">
+          {goatWinners.length > 1
+            ? `🏅 Tied • ${goatWinners[0].votes} votes each`
+            : `${goatWinners[0].votes} vote${
+                goatWinners[0].votes !== 1
+                  ? "s"
+                  : ""
+              }`}
+        </p>
+      </>
+    ) : (
+      <p className="mt-2">
+        No votes yet
+      </p>
+    )}
+  </div>
 
-          <h2 className="font-bold text-lg">
-            Hardest Worker
-          </h2>
+  <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-5">
+    <div className="text-3xl mb-2">
+      🔥
+    </div>
 
-          <p className="mt-2">
-            {workerWinner?.name ??
-              "No votes yet"}
-          </p>
+    <h2 className="font-bold text-lg">
+      Hardest Worker
+    </h2>
 
-          {workerWinner && (
-            <p className="text-sm text-zinc-400">
-              {workerWinner.votes} vote
-              {workerWinner.votes !== 1
-                ? "s"
-                : ""}
-            </p>
-          )}
+    {workerWinners?.length ? (
+      <>
+        <div className="mt-2 font-semibold">
+          {workerWinners.map((player) => (
+            <div key={player.name}>
+              {player.name}
+            </div>
+          ))}
         </div>
 
-        <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-5">
-          <div className="text-3xl mb-2">
-            🛡️
-          </div>
+        <p className="text-sm text-zinc-400 mt-2">
+          {workerWinners.length > 1
+            ? `🏅 Tied • ${workerWinners[0].votes} votes each`
+            : `${workerWinners[0].votes} vote${
+                workerWinners[0].votes !== 1
+                  ? "s"
+                  : ""
+              }`}
+        </p>
+      </>
+    ) : (
+      <p className="mt-2">
+        No votes yet
+      </p>
+    )}
+  </div>
 
-          <h2 className="font-bold text-lg">
-            Unstoppable Defense
-          </h2>
+  <div className="bg-zinc-900 border border-zinc-700 rounded-lg p-5">
+    <div className="text-3xl mb-2">
+      🛡️
+    </div>
 
-          <p className="mt-2">
-            {defenseWinner?.name ??
-              "No votes yet"}
-          </p>
+    <h2 className="font-bold text-lg">
+      Unstoppable Defense
+    </h2>
 
-          {defenseWinner && (
-            <p className="text-sm text-zinc-400">
-              {defenseWinner.votes} vote
-              {defenseWinner.votes !== 1
-                ? "s"
-                : ""}
-            </p>
-          )}
+    {defenseWinners?.length ? (
+      <>
+        <div className="mt-2 font-semibold">
+          {defenseWinners.map((player) => (
+            <div key={player.name}>
+              {player.name}
+            </div>
+          ))}
         </div>
-      </div>
+
+        <p className="text-sm text-zinc-400 mt-2">
+          {defenseWinners.length > 1
+            ? `🏅 Tied • ${defenseWinners[0].votes} votes each`
+            : `${defenseWinners[0].votes} vote${
+                defenseWinners[0].votes !== 1
+                  ? "s"
+                  : ""
+              }`}
+        </p>
+      </>
+    ) : (
+      <p className="mt-2">
+        No votes yet
+      </p>
+    )}
+  </div>
+</div>
 
       <div className="flex gap-4 mb-8">
         <Link
