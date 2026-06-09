@@ -124,6 +124,7 @@ export default async function PlayerPage({
 
   return (
     <main className="min-h-screen bg-black text-white p-8">
+        
       <div className="max-w-6xl mx-auto">
 
         <Link
@@ -247,8 +248,16 @@ export default async function PlayerPage({
 
           </table>
         </div>
-
+        <div className="mb-6">
+            <Link
+                href="/admin/player-profiles"
+                className="inline-block bg-zinc-700 hover:bg-zinc-600 px-4 py-2 rounded"
+            >
+                ← Back to Player Preview
+            </Link>
+        </div>
       </div>
     </main>
+    
   );
 }
