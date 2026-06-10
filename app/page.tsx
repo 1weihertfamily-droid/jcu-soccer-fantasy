@@ -3,6 +3,8 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { buildLeaderboard } from "@/lib/leaderboard";
 
+export const dynamic = "force-dynamic";
+
 const { data: activeGames } = await supabase
   .from("games")
   .select("*")
@@ -39,88 +41,92 @@ export default async function Home() {
     scoring
   );
 
-  // ---------------------------
-  // Homepage Awards
-  // ---------------------------
+ // ---------------------------
+// Homepage Awards
+// ---------------------------
 
-  const { data: allBallots } = await supabase
-  .from("ballots")
-  .select("id, game_id");
+const { data: votingGame } = await supabase
+  .from("games")
+  .select("id")
+  .eq("voting_open", true)
+  .single();
 
 const latestGameId =
-  allBallots?.reduce(
-    (max, ballot) =>
-      Math.max(max, ballot.game_id),
-    0
-  ) ?? 0;
+  votingGame?.id ?? 0;
+
+const { data: ballots } = await supabase
+  .from("ballots")
+  .select("id")
+  .eq("game_id", latestGameId);
 
 const ballotIds =
-  allBallots
-    ?.filter(
-      (ballot) =>
-        ballot.game_id === latestGameId
-    )
-    .map((ballot) => ballot.id) ?? [];
+  ballots?.map((b) => b.id) ?? [];
 
-  const { data: votes } = await supabase
-    .from("ballot_votes")
-    .select("*")
-    .in("ballot_id", ballotIds);
+const { data: votes } = await supabase
+  .from("ballot_votes")
+  .select("*")
+  .in("ballot_id", ballotIds);
 
-  const playerMap = new Map(
-    (players ?? []).map((player) => [
-      player.id,
-      player.name,
-    ])
-  );
+const playerMap = new Map(
+  (players ?? []).map((player) => [
+    player.id,
+    player.name,
+  ])
+);
 
-  function getWinners(category: string) {
-    const categoryVotes =
-      votes?.filter(
-        (vote) => vote.category === category
-      ) ?? [];
+function getWinners(category: string) {
+  const categoryVotes =
+    votes?.filter(
+      (vote) => vote.category === category
+    ) ?? [];
 
-    const counts = new Map<
-      number,
-      {
-        name: string;
-        votes: number;
-      }
-    >();
+  const counts = new Map<
+    number,
+    {
+      name: string;
+      votes: number;
+    }
+  >();
 
-    categoryVotes.forEach((vote: any) => {
-      const existing = counts.get(
-        vote.player_id
-      );
-
-      if (existing) {
-        existing.votes += 1;
-      } else {
-        counts.set(vote.player_id, {
-          name:
-            playerMap.get(vote.player_id) ??
-            "Unknown Player",
-          votes: 1,
-        });
-      }
-    });
-
-    const winners = [...counts.values()];
-    const maxVotes = Math.max(
-      ...winners.map((entry) => entry.votes),
-      0
+  categoryVotes.forEach((vote: any) => {
+    const existing = counts.get(
+      vote.player_id
     );
 
-    return winners.filter(
-      (entry) => entry.votes === maxVotes
-    );
-  }
+    if (existing) {
+      existing.votes += 1;
+    } else {
+      counts.set(vote.player_id, {
+        name:
+          playerMap.get(vote.player_id) ??
+          "Unknown Player",
+        votes: 1,
+      });
+    }
+  });
 
-  const goatWinners = getWinners("goat");
-  const workerWinners = getWinners(
-    "hardest_worker"
+  const winners = [...counts.values()];
+
+  const maxVotes = Math.max(
+    ...winners.map(
+      (entry) => entry.votes
+    ),
+    0
   );
-  const defenseWinners = getWinners(
+
+  return winners.filter(
+    (entry) => entry.votes === maxVotes
+  );
+}
+
+const goatWinners =
+  getWinners("goat");
+
+const workerWinners =
+  getWinners("hardest_worker");
+
+const defenseWinners =
+  getWinners(
     "unstoppable_defense"
   );
 
@@ -308,10 +314,17 @@ const ballotIds =
 </div>
 </Link>
         <div className="mt-8">
-            
-          <h2 className="text-2xl font-bold mb-4">
-            ⚽ Games
-          </h2>
+          <Link href="/games">
+            <div className="mb-4">
+              <h2 className="text-2xl font-bold">
+                ⚽ Games
+              </h2>
+
+              <p className="text-sm text-blue-400 mt-1">
+                View Full Game Archive →
+              </p>
+            </div>
+          </Link>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {games.map((game) => (
@@ -326,6 +339,7 @@ const ballotIds =
               </Link>
             ))}
           </div>
+
           <div className="flex justify-end mt-8">
             <Link
               href="/admin"
@@ -334,7 +348,7 @@ const ballotIds =
               Admin
             </Link>
           </div>
-      </div>
+        </div>
       </div>
     </main>
   );
