@@ -149,12 +149,17 @@ const defenseWinners =
           <h2 className="text-2xl mt-4">
             JCU U9/U10 Soccer Fantasy
           </h2>
+
+          <h3 className="text-2xl mt-4">
+            Lake Mills Team
+          </h3>
+
         </div>
 
         <div className="bg-zinc-900 rounded-xl p-6 shadow-lg">
-          <h3 className="text-2xl font-bold mb-4">
+          <h4 className="text-2xl font-bold mb-4">
             🏆 Current Leaderboard
-          </h3>
+          </h4>
 
           {error && (
             <p className="text-red-500 mb-4">
