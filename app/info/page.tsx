@@ -58,7 +58,7 @@ export default function InfoPage() {
 
         <div className="bg-zinc-900 rounded-xl p-6 mb-8">
           <h2 className="text-3xl font-bold mb-4">
-            ⚽  Ball In Play vs Out of Play
+            ⚽  Ball In Play (A & B) vs Out of Play (C & D)
           </h2>
 
           <Image
@@ -133,10 +133,11 @@ export default function InfoPage() {
           </h2>
 
           <Image
-            src="/rules/throw-in1.png"
+            src="/rules/throw-in.png"
             alt="Throw In"
             width={1000}
             height={600}
+            unoptimized
             className="rounded-xl mb-4 w-full"
           />
 
@@ -154,10 +155,11 @@ export default function InfoPage() {
           </h2>
 
           <Image
-            src="/rules/handball1.png"
+            src="/rules/handball.png"
             alt="Handball"
             width={1000}
             height={600}
+            unoptimized
             className="rounded-xl mb-4 w-full"
           />
 
