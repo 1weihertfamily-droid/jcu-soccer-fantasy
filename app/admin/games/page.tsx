@@ -1,6 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
+import {
+  DragDropContext,
+  Droppable,
+  Draggable,
+} from "@hello-pangea/dnd";
+
 import Link from "next/link";
 
 type Game = {
@@ -8,85 +15,111 @@ type Game = {
   name: string;
   active: boolean;
   voting_open: boolean;
-  display_order: number;
+  display_order: number | null;
 };
 
 export default function AdminGamesPage() {
   const [games, setGames] = useState<Game[]>([]);
   const [newGame, setNewGame] = useState("");
 
-  async function loadGames() {
-    const res = await fetch("/api/admin/games");
+ async function loadGames() {
+  const res = await fetch("/api/admin/games");
 
-    if (!res.ok) {
-      alert("Failed to load games");
-      return;
-    }
-
-    const data = await res.json();
-    setGames(data);
+  if (!res.ok) {
+    alert("Failed to load games");
+    return;
   }
 
-  useEffect(() => {
-    loadGames();
-  }, []);
+  const data = await res.json();
+  setGames(data);
+}
 
-  async function addGame() {
-    if (!newGame.trim()) return;
+function handleDragEnd(result: any) {
+  if (!result.destination) return;
 
-    const res = await fetch(
-      "/api/admin/games",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-        body: JSON.stringify({
+  const reordered = [...games];
+
+  const [movedItem] = reordered.splice(
+    result.source.index,
+    1
+  );
+
+  reordered.splice(
+    result.destination.index,
+    0,
+    movedItem
+  );
+
+  const updatedGames = reordered.map(
+    (game, index) => ({
+      ...game,
+      display_order: index + 1,
+    })
+  );
+
+  setGames(updatedGames);
+}
+
+useEffect(() => {
+  loadGames();
+}, []);
+
+async function addGame() {
+  if (!newGame.trim()) return;
+
+  const res = await fetch(
+    "/api/admin/games",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
         name: newGame,
         display_order:
           games.length + 1,
       }),
-      }
-    );
-
-    if (!res.ok) {
-      alert("Failed to add game");
-      return;
     }
+  );
 
-    setNewGame("");
-    loadGames();
+  if (!res.ok) {
+    alert("Failed to add game");
+    return;
   }
 
-  async function updateGame(
-    id: number,
-    updates: Partial<Game>
-  ) {
-    const res = await fetch(
-      "/api/admin/games",
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-        body: JSON.stringify({
-          id,
-          ...updates,
-        }),
-      }
-    );
+  setNewGame("");
+  loadGames();
+}
 
-    if (!res.ok) {
-      alert("Failed to update game");
-      return;
+async function updateGame(
+  id: number,
+  updates: Partial<Game>
+) {
+  const res = await fetch(
+    "/api/admin/games",
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        id,
+        ...updates,
+      }),
     }
+  );
 
-    loadGames();
+  if (!res.ok) {
+    alert("Failed to update game");
+    return;
   }
 
-  async function saveAllGames() {
+  loadGames();
+}
+
+async function saveAllGames() {
   const response = await fetch(
     "/api/admin/games/save-all",
     {
@@ -128,7 +161,8 @@ async function resetVoting(gameId: number) {
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type":
+          "application/json",
       },
       body: JSON.stringify({
         gameId,
@@ -136,17 +170,24 @@ async function resetVoting(gameId: number) {
     }
   );
 
-  const result = await response.json();
+  const result =
+    await response.json();
 
   if (!response.ok) {
-    alert(`Reset failed: ${result.error}`);
+    alert(
+      `Reset failed: ${result.error}`
+    );
     return;
   }
 
-  alert("Voting successfully reset.");
+  alert(
+    "Voting successfully reset."
+  );
 }
 
-async function clearGameStats(gameId: number) {
+async function clearGameStats(
+  gameId: number
+) {
   const confirmed = confirm(
     "Delete ALL player stats for this game?"
   );
@@ -158,7 +199,8 @@ async function clearGameStats(gameId: number) {
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type":
+          "application/json",
       },
       body: JSON.stringify({
         gameId,
@@ -166,14 +208,19 @@ async function clearGameStats(gameId: number) {
     }
   );
 
-  const result = await response.json();
+  const result =
+    await response.json();
 
   if (!response.ok) {
-    alert(`Reset failed: ${result.error}`);
+    alert(
+      `Reset failed: ${result.error}`
+    );
     return;
   }
 
-  alert("Game stats successfully cleared.");
+  alert(
+    "Game stats successfully cleared."
+  );
 }
   return (
     <main className="min-h-screen bg-black text-white p-8">
@@ -228,13 +275,12 @@ async function clearGameStats(gameId: number) {
           <table className="w-full">
             <thead>
               <tr className="border-b border-zinc-700">
-                
-                <th className="text-center p-4">
-                  Order
+                <th className="text-left p-4 w-12">
+                  ☰
                 </th>
 
                 <th className="text-left p-4">
-                  Name
+                  Game Name
                 </th>
 
                 <th className="text-center p-4">
@@ -246,138 +292,199 @@ async function clearGameStats(gameId: number) {
                 </th>
 
                 <th className="text-center p-4">
-                    Voting
+                  Voting
                 </th>
 
                 <th className="text-center p-4">
-                    Stats
+                  Stats
                 </th>
               </tr>
             </thead>
 
-            <tbody>
-              {games.map((game) => (
-                <tr
-                  key={game.id}
-                  className="border-b border-zinc-800"
-                >
-                  <td className="p-4">
-                    <input
-                      type="number"
-                      value={game.display_order}
-                      onChange={(e) =>
-                        setGames((current) =>
-                          current.map((g) =>
-                            g.id === game.id
-                              ? {
-                                  ...g,
-                                  display_order:
-                                    Number(
-                                      e.target.value
-                                    ) || 0,
-                                }
-                              : g
-                          )
-                        )
-                      }
-                      className="w-20 p-2 rounded bg-zinc-800 border border-zinc-700 text-center"
-                    />
-                  </td>
-                  <td className="p-4">
-                    <input
-                      value={game.name}
-                      onChange={(e) =>
-                        setGames((current) =>
-                          current.map((g) =>
-                            g.id === game.id
-                              ? {
-                                  ...g,
-                                  name: e.target.value,
-                                }
-                              : g
-                          )
-                        )
-                      }
-                      className="w-full p-2 rounded bg-zinc-800 border border-zinc-700"
-                    />
-                  </td>
+            <DragDropContext
+              onDragEnd={handleDragEnd}
+            >
+              <Droppable droppableId="games">
+                {(provided) => (
+                  <tbody
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                  >
+                    {games.map(
+                      (game, index) => (
+                        <Draggable
+                          key={String(game.id)}
+                          draggableId={String(
+                            game.id
+                          )}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <tr
+                              ref={
+                                provided.innerRef
+                              }
+                              {...provided.draggableProps}
+                              className="border-b border-zinc-800"
+                            >
+                              <td
+                                className="p-4 cursor-grab text-zinc-400"
+                                {...provided.dragHandleProps}
+                              >
+                                ☰
+                              </td>
 
-                  <td className="text-center">
-                    <input
-                      type="checkbox"
-                      checked={game.active}
-                      onChange={(e) =>
-                        setGames((current) =>
-                          current.map((g) =>
-                            g.id === game.id
-                              ? {
-                                  ...g,
-                                  active:
-                                    e.target.checked,
-                                }
-                              : g
-                          )
-                        )
-                      }
-                    />
-                  </td>
+                              <td className="p-4">
+                                <input
+                                  value={
+                                    game.name
+                                  }
+                                  onChange={(
+                                    e
+                                  ) =>
+                                    setGames(
+                                      (
+                                        current
+                                      ) =>
+                                        current.map(
+                                          (
+                                            g
+                                          ) =>
+                                            g.id ===
+                                            game.id
+                                              ? {
+                                                  ...g,
+                                                  name:
+                                                    e
+                                                      .target
+                                                      .value,
+                                                }
+                                              : g
+                                        )
+                                    )
+                                  }
+                                  className="w-full p-2 rounded bg-zinc-800 border border-zinc-700"
+                                />
+                              </td>
 
-                  <td className="text-center">
-                    <input
-                      type="checkbox"
-                      checked={
-                        game.voting_open
-                      }
-                      onChange={(e) =>
-                        setGames((current) =>
-                          current.map((g) =>
-                            g.id === game.id
-                              ? {
-                                  ...g,
-                                  voting_open:
-                                    e.target.checked,
-                                }
-                              : g
-                          )
-                        )
-                      }
-                    />
-                  </td>
+                              <td className="text-center">
+                                <input
+                                  type="checkbox"
+                                  checked={
+                                    game.active
+                                  }
+                                  onChange={(
+                                    e
+                                  ) =>
+                                    setGames(
+                                      (
+                                        current
+                                      ) =>
+                                        current.map(
+                                          (
+                                            g
+                                          ) =>
+                                            g.id ===
+                                            game.id
+                                              ? {
+                                                  ...g,
+                                                  active:
+                                                    e
+                                                      .target
+                                                      .checked,
+                                                }
+                                              : g
+                                        )
+                                    )
+                                  }
+                                />
+                              </td>
 
-                    <td className="text-center p-2">
-                      <button
-                        onClick={() => resetVoting(game.id)}
-                        className="
-                          bg-red-600 hover:bg-red-700
-                          px-3 py-2 rounded
-                          text-sm font-semibold
-                          w-full
-                          whitespace-normal
-                          leading-tight
-                        "
-                      >
-                        Reset Voting
-                      </button>
-                    </td>
+                              <td className="text-center">
+                                <input
+                                  type="checkbox"
+                                  checked={
+                                    game.voting_open
+                                  }
+                                  onChange={(
+                                    e
+                                  ) =>
+                                    setGames(
+                                      (
+                                        current
+                                      ) =>
+                                        current.map(
+                                          (
+                                            g
+                                          ) =>
+                                            g.id ===
+                                            game.id
+                                              ? {
+                                                  ...g,
+                                                  voting_open:
+                                                    e
+                                                      .target
+                                                      .checked,
+                                                }
+                                              : g
+                                        )
+                                    )
+                                  }
+                                />
+                              </td>
 
-                    <td className="text-center p-2">
-                      <button
-                        onClick={() => clearGameStats(game.id)}
-                        className="
-                          bg-orange-600 hover:bg-orange-700
-                          px-3 py-2 rounded
-                          text-sm font-semibold
-                          w-full
-                          whitespace-normal
-                          leading-tight
-                        "
-                      >
-                        Clear Stats
-                      </button>
-                    </td>
-                </tr>
-              ))}
-            </tbody>
+                              <td className="text-center p-2">
+                                <button
+                                  onClick={() =>
+                                    resetVoting(
+                                      game.id
+                                    )
+                                  }
+                                  className="
+                                    bg-red-600
+                                    hover:bg-red-700
+                                    px-3 py-2
+                                    rounded
+                                    text-sm
+                                    font-semibold
+                                    w-full
+                                  "
+                                >
+                                  Reset Voting
+                                </button>
+                              </td>
+
+                              <td className="text-center p-2">
+                                <button
+                                  onClick={() =>
+                                    clearGameStats(
+                                      game.id
+                                    )
+                                  }
+                                  className="
+                                    bg-orange-600
+                                    hover:bg-orange-700
+                                    px-3 py-2
+                                    rounded
+                                    text-sm
+                                    font-semibold
+                                    w-full
+                                  "
+                                >
+                                  Clear Stats
+                                </button>
+                              </td>
+                            </tr>
+                          )}
+                        </Draggable>
+                      )
+                    )}
+
+                    {provided.placeholder}
+                  </tbody>
+                )}
+              </Droppable>
+            </DragDropContext>
           </table>
         </div>
         <div className="mt-6 flex justify-end">
