@@ -207,7 +207,7 @@ const defenseWinners =
 <Link href="/awards">
   <div className="mt-8 mb-4">
     <h2 className="text-xl font-bold">
-      Latest Award Winners
+      🥇 Latest Award Winners
     </h2>
 
     <p className="text-zinc-400">
