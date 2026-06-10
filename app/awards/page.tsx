@@ -359,10 +359,10 @@ const highlighted =
 
         <div className="mb-6">
           <Link
-            href="/admin/player-profiles"
+            href="/admin/"
             className="inline-block bg-zinc-600 hover:bg-red-600 px-4 py-2 rounded"
           >
-            ← Back to Admin - Player Preview
+            ← Back to Admin 
           </Link>
         </div>
       </div>
