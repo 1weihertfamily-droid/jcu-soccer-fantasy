@@ -27,6 +27,8 @@ export async function POST(
             active: game.active,
             voting_open:
               game.voting_open,
+            display_order:
+              game.display_order,
           })
           .eq("id", game.id);
 

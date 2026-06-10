@@ -5,7 +5,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from("games")
     .select("id, name")
-    .order("id");
+    .order("display_order", { ascending: true });
 
   if (error) {
     return NextResponse.json(

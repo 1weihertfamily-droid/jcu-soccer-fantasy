@@ -5,15 +5,15 @@ import { buildLeaderboard } from "@/lib/leaderboard";
 
 export const dynamic = "force-dynamic";
 
-const { data: activeGames } = await supabase
+export default async function Home() {
+  const { data: activeGames } = await supabase
   .from("games")
   .select("*")
   .eq("active", true)
-  .order("id");
+  .order("display_order");
 
-const games = activeGames ?? [];
+  const games = activeGames ?? [];
 
-export default async function Home() {
   const { data: players, error } = await supabase
     .from("players")
     .select("*")
@@ -328,16 +328,17 @@ const defenseWinners =
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {games.map((game) => (
-              <Link
-                key={game.id}
-                href={`/games/${game.id}`}
-                className="bg-zinc-900 rounded-xl p-4 hover:bg-zinc-800 transition"
-              >
-                <div className="text-lg font-semibold">
-                  {game.name}
-                </div>
-              </Link>
-            ))}
+                <Link
+                  key={game.id}
+                  href={`/games/${game.id}`}
+                  className="bg-zinc-900 rounded-xl p-4 hover:bg-zinc-800 transition"
+                >
+                  <div className="text-lg font-semibold">
+                    {game.name}
+                  </div>
+                </Link>
+              ))}
+                
           </div>
 
           <div className="flex justify-end mt-8">

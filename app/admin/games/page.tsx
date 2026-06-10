@@ -8,6 +8,7 @@ type Game = {
   name: string;
   active: boolean;
   voting_open: boolean;
+  display_order: number;
 };
 
 export default function AdminGamesPage() {
@@ -42,8 +43,10 @@ export default function AdminGamesPage() {
             "application/json",
         },
         body: JSON.stringify({
-          name: newGame,
-        }),
+        name: newGame,
+        display_order:
+          games.length + 1,
+      }),
       }
     );
 
@@ -225,6 +228,11 @@ async function clearGameStats(gameId: number) {
           <table className="w-full">
             <thead>
               <tr className="border-b border-zinc-700">
+                
+                <th className="text-center p-4">
+                  Order
+                </th>
+
                 <th className="text-left p-4">
                   Name
                 </th>
@@ -253,6 +261,28 @@ async function clearGameStats(gameId: number) {
                   key={game.id}
                   className="border-b border-zinc-800"
                 >
+                  <td className="p-4">
+                    <input
+                      type="number"
+                      value={game.display_order}
+                      onChange={(e) =>
+                        setGames((current) =>
+                          current.map((g) =>
+                            g.id === game.id
+                              ? {
+                                  ...g,
+                                  display_order:
+                                    Number(
+                                      e.target.value
+                                    ) || 0,
+                                }
+                              : g
+                          )
+                        )
+                      }
+                      className="w-20 p-2 rounded bg-zinc-800 border border-zinc-700 text-center"
+                    />
+                  </td>
                   <td className="p-4">
                     <input
                       value={game.name}

@@ -6,7 +6,7 @@ export async function GET() {
   const { data, error } = await supabaseAdmin
     .from("games")
     .select("*")
-    .order("id");
+    .order("display_order", { ascending: true });
 
   if (error) {
     return NextResponse.json(
@@ -22,7 +22,10 @@ export async function GET() {
 export async function POST(
   request: Request
 ) {
-  const { name } = await request.json();
+  const {
+  name,
+  display_order,
+} = await request.json();
 
   if (!name?.trim()) {
     return NextResponse.json(
@@ -39,6 +42,8 @@ export async function POST(
           name: name.trim(),
           active: true,
           voting_open: true,
+          display_order:
+            display_order ?? 999,
         },
       ])
       .select()
@@ -63,6 +68,7 @@ export async function PATCH(
     name,
     active,
     voting_open,
+    display_order,
   } = await request.json();
 
   if (!id) {
@@ -76,6 +82,7 @@ export async function PATCH(
     name?: string;
     active?: boolean;
     voting_open?: boolean;
+    display_order?: number;
   } = {};
 
   if (typeof name === "string") {
@@ -92,6 +99,14 @@ export async function PATCH(
     updates.voting_open =
       voting_open;
   }
+
+if (
+  typeof display_order ===
+  "number"
+) {
+  updates.display_order =
+    display_order;
+}
 
   const { data, error } =
     await supabaseAdmin

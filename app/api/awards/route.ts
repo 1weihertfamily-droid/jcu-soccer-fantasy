@@ -10,8 +10,13 @@ export async function GET() {
           category,
           player_id,
           players(name),
-          ballots!inner(game_id),
-          games:ballots(game_id)
+          ballots!inner(
+            game_id,
+            games!inner(
+              id,
+              display_order
+            )
+          )
         `);
 
     if (error) {
@@ -25,10 +30,15 @@ export async function GET() {
 
     votes?.forEach((vote: any) => {
       const gameId =
-        vote.ballots?.game_id;
+        String(vote.ballots?.game_id);
+
+      const displayOrder =
+        vote.ballots?.games?.display_order ??
+        9999;
 
       if (!grouped[gameId]) {
         grouped[gameId] = {
+          displayOrder,
           goat: {},
           hardest_worker: {},
           unstoppable_defense: {},
@@ -61,37 +71,47 @@ export async function GET() {
 
     const results = Object.entries(
       grouped
-    ).map(([gameId, categories]) => ({
-      gameId,
-      goat: Object.values(
-        (categories as any).goat
-      )
-        .sort(
-          (a: any, b: any) =>
-            b.votes - a.votes
-        )
-        .slice(0, 5),
+    )
+      .map(([gameId, categories]) => ({
+        gameId,
+        displayOrder:
+          (categories as any)
+            .displayOrder,
 
-      hardestWorker: Object.values(
-        (categories as any)
-          .hardest_worker
-      )
-        .sort(
-          (a: any, b: any) =>
-            b.votes - a.votes
+        goat: Object.values(
+          (categories as any).goat
         )
-        .slice(0, 5),
+          .sort(
+            (a: any, b: any) =>
+              b.votes - a.votes
+          )
+          .slice(0, 5),
 
-      defense: Object.values(
-        (categories as any)
-          .unstoppable_defense
-      )
-        .sort(
-          (a: any, b: any) =>
-            b.votes - a.votes
+        hardestWorker: Object.values(
+          (categories as any)
+            .hardest_worker
         )
-        .slice(0, 5),
-    }));
+          .sort(
+            (a: any, b: any) =>
+              b.votes - a.votes
+          )
+          .slice(0, 5),
+
+        defense: Object.values(
+          (categories as any)
+            .unstoppable_defense
+        )
+          .sort(
+            (a: any, b: any) =>
+              b.votes - a.votes
+          )
+          .slice(0, 5),
+      }))
+      .sort(
+        (a: any, b: any) =>
+          a.displayOrder -
+          b.displayOrder
+      );
 
     return NextResponse.json(
       results

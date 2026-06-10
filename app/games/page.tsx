@@ -5,7 +5,7 @@ export default async function GamesPage() {
   const { data: games } = await supabase
     .from("games")
     .select("*")
-    .order("id", { ascending: true });
+    .order("display_order", { ascending: true });
 
   return (
     <main className="min-h-screen bg-black text-white p-6">
