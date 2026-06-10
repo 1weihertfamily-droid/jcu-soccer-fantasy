@@ -341,7 +341,27 @@ const defenseWinners =
                 
           </div>
 
-<Link href="/info"></Link>
+          <div className="mt-8">
+            <Link href="/info">
+              <div className="mb-4">
+                <h2 className="text-2xl font-bold">
+                  📚 Soccer Information
+                </h2>
+
+                <p className="text-sm text-blue-400 mt-1">
+                  Learn Rules, Terminology & Field Positions →
+                </p>
+              </div>
+
+              <div className="bg-zinc-900 rounded-xl p-6 hover:bg-zinc-800 transition">
+                <p className="text-zinc-300">
+                  New to soccer? Learn common rules like offsides,
+                  build-out lines, goal kicks, corner kicks, throw-ins,
+                  handballs, and more.
+                </p>
+              </div>
+            </Link>
+          </div>
 
           <div className="flex justify-end mt-8">
             <Link
