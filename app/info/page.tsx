@@ -82,7 +82,7 @@ export default function InfoPage() {
 
         <div className="bg-zinc-900 rounded-xl p-6 mb-8">
           <h2 className="text-3xl font-bold mb-4">
-            🚩 General Positions
+            📍 General Positions
           </h2>
 
           <Image
@@ -133,7 +133,7 @@ export default function InfoPage() {
           </h2>
 
           <Image
-            src="/rules/throw-in.png"
+            src="/rules/throw-in1.png"
             alt="Throw In"
             width={1000}
             height={600}
@@ -154,7 +154,7 @@ export default function InfoPage() {
           </h2>
 
           <Image
-            src="/rules/handball.png"
+            src="/rules/handball1.png"
             alt="Handball"
             width={1000}
             height={600}
