@@ -341,6 +341,8 @@ const defenseWinners =
                 
           </div>
 
+<Link href="/info"></Link>
+
           <div className="flex justify-end mt-8">
             <Link
               href="/admin"
