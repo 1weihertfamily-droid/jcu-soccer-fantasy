@@ -204,8 +204,6 @@ export default function InfoPage() {
           </p>
         </div>
 
-        
-
         {/* THROW IN */}
 
         <div className="bg-zinc-900 rounded-xl p-6 mb-8">
@@ -250,6 +248,28 @@ export default function InfoPage() {
             arm or hand.
           </p>
         </div>
+
+        {/* CORNER KICK */}
+
+        <div className="bg-zinc-900 rounded-xl p-6 mb-8">
+          <h2 className="text-3xl font-bold mb-4">
+            🚩 Corner Kick
+          </h2>
+
+          <Image
+            src="/rules/corner-kick.png"
+            alt="Corner Kick"
+            width={1000}
+            height={600}
+            className="rounded-xl mb-4 w-full"
+          />
+
+          <p className="text-zinc-300">
+            A corner kick is awarded when the defending team touches the
+            ball last before it crosses the goal line.
+          </p>
+        </div>
+
 
         {/* GOALKEEPER */}
 
