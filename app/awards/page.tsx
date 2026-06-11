@@ -152,7 +152,7 @@ const highlighted =
 
           <Link
             href="/"
-            className="bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded"
+            className="bg-blue-600 hover:bg-blue-800 text-white px-6 py-3 rounded-lg transition"
           >
             ← Back to Home
           </Link>
@@ -362,7 +362,7 @@ const highlighted =
             href="/admin/"
             className="inline-block bg-zinc-600 hover:bg-red-600 px-4 py-2 rounded"
           >
-            ← Back to Admin 
+            ← Back to Admin Dashboard
           </Link>
         </div>
       </div>

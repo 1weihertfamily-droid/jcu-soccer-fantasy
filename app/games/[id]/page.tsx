@@ -139,9 +139,45 @@ const displayStat = (value: number) =>
 
   return (
     <main className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-4xl font-bold mb-6">
+  <div className="max-w-6xl mx-auto">
+
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+
+      <h1 className="text-4xl font-bold">
         {game?.name}
       </h1>
+
+      <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+
+        <Link
+          href={`/vote/${id}`}
+          className="
+            bg-green-600 hover:bg-green-700
+            text-white font-semibold
+            px-6 py-3 rounded-lg transition
+            text-center
+            w-full sm:w-auto
+          "
+        >
+          Vote For Awards
+        </Link>
+
+        <Link
+          href="/"
+          className="
+            bg-blue-600 hover:bg-blue-800
+            text-white
+            px-6 py-3 rounded-lg transition
+            text-center
+            w-full sm:w-auto
+          "
+        >
+          ← Back Home
+        </Link>
+
+      </div>
+
+    </div>
 
 {/* Awards */}
 
@@ -255,21 +291,7 @@ const displayStat = (value: number) =>
   </div>
 </div>
 
-      <div className="flex gap-4 mb-8">
-        <Link
-          href={`/vote/${id}`}
-          className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-3 rounded-lg transition"
-        >
-          Vote For Awards
-        </Link>
-
-        <Link
-          href="/"
-          className="bg-blue-600 hover:bg-blue-800 text-white px-6 py-3 rounded-lg transition"
-        >
-          ← Back to Home
-        </Link>
-      </div>
+  
 
       {!rows.length ? (
         <p>No stats entered yet.</p>
@@ -441,6 +463,7 @@ const displayStat = (value: number) =>
           </div>
         </div>
       )}
-    </main>
+    </div>
+  </main>
   );
 }

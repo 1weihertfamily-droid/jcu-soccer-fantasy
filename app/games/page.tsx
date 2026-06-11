@@ -23,7 +23,7 @@ export default async function GamesPage() {
 
           <Link
             href="/"
-            className="bg-blue-700 hover:bg-blue-600 px-4 py-2 rounded"
+            className="bg-blue-600 hover:bg-blue-800 text-white px-6 py-3 rounded-lg transition"
           >
             ← Back Home
           </Link>

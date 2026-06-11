@@ -125,22 +125,29 @@ export default async function PlayerPage({
   return (
     <main className="min-h-screen bg-black text-white p-8">
         
-      <div className="max-w-6xl mx-auto">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-4xl font-bold">
+            {player.name}
+          </h1>
+
+          <p className="text-2xl text-red-400 mt-2">
+            {fantasyPoints} Fantasy Points
+          </p>
+        </div>
 
         <Link
           href="/"
-          className="inline-block bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded mb-6"
+          className="
+            bg-blue-600 hover:bg-blue-800
+            px-4 py-2 rounded
+            text-center
+            w-full sm:w-auto
+          "
         >
           ← Back Home
         </Link>
-
-        <h1 className="text-4xl font-bold">
-          {player.name}
-        </h1>
-
-        <p className="text-2xl text-red-400 mt-2">
-          {fantasyPoints} Fantasy Points
-        </p>
+      </div>
 
         {/* Awards */}
 
@@ -248,15 +255,14 @@ export default async function PlayerPage({
 
           </table>
         </div>
-        <div className="mb-6">
-            <Link
-                href="/admin/player-profiles"
-                className="inline-block bg-zinc-700 hover:bg-red-500 px-4 py-2 rounded"
-            >
-                ← Back to Admin - Player Preview
-            </Link>
+        <div className="mt-8 mb-6">
+          <Link
+            href="/admin/"
+            className="inline-block bg-zinc-600 hover:bg-red-600 px-4 py-2 rounded"
+          >
+            ← Back to Admin Dashboard
+          </Link>
         </div>
-      </div>
     </main>
     
   );
