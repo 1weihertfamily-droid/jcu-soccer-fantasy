@@ -24,6 +24,16 @@ export default async function Home() {
     .from("player_stats")
     .select("*");
 
+  const {
+  data: rosters,
+  error: rosterError,
+} = await supabase
+  .from("game_rosters")
+  .select("*");
+
+console.log("ROSTERS:", rosters);
+console.log("ROSTER ERROR:", rosterError);
+
   const { data: scoringRows } = await supabase
     .from("fantasy_points_values")
     .select("*");
@@ -40,6 +50,50 @@ export default async function Home() {
     stats ?? [],
     scoring
   );
+
+    const playerGamesPlayed = new Map<number, number>();
+      (rosters ?? []).forEach((roster) => {
+        const playerId = Number(
+          roster.player_id
+        );
+
+        playerGamesPlayed.set(
+          playerId,
+          (playerGamesPlayed.get(playerId) ?? 0) + 1
+        );
+      });
+
+    const leaderboardWithAverage = leaderboard.map(
+      (player) => {
+        const gamesPlayed =
+          playerGamesPlayed.get(
+            Number(player.id)
+          ) ?? 0;
+
+        return {
+          ...player,
+          gamesPlayed,
+          avgPoints:
+            gamesPlayed > 0
+              ? player.points / gamesPlayed
+              : 0,
+        };
+      }
+    );
+
+    console.log(
+  leaderboardWithAverage.slice(0, 5)
+);
+
+console.log(
+  "Roster IDs",
+  rosters?.slice(0, 5)
+);
+
+console.log(
+  "Leaderboard IDs",
+  leaderboard.slice(0, 5)
+);
 
  // ---------------------------
 // Homepage Awards
@@ -175,12 +229,23 @@ const defenseWinners =
               <tr className="border-b border-zinc-700">
                 <th className="text-left py-3">Rank</th>
                 <th className="text-left py-3">Player</th>
-                <th className="text-right py-3">Points</th>
+                <th className="text-right py-3">
+                  Points
+                </th>
+
+                <th className="text-right py-3">
+                  GP
+                </th>
+
+                <th className="text-right py-3">
+                  Avg
+                </th>
               </tr>
             </thead>
 
             <tbody>
-              {leaderboard.map((player, index) => (
+              {leaderboardWithAverage.map(
+               (player, index) => (
                 <tr
                   key={player.id}
                   className="border-b border-zinc-800"
@@ -200,6 +265,14 @@ const defenseWinners =
 
                   <td className="py-3 text-right">
                     {player.points}
+                  </td>
+
+                  <td className="py-3 text-right">
+                    {player.gamesPlayed}
+                  </td>
+
+                  <td className="py-3 text-right">
+                    {player.avgPoints.toFixed(1)}
                   </td>
                 </tr>
               ))}
