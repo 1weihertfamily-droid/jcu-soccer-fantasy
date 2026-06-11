@@ -15,12 +15,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "JCU Soccer Fantasy",
   description: "Jefferson County United U9/U10 Soccer Fantasy League - Lake Mills.",
-openGraph: {
-    title: "JCU Soccer Fantasy",
-    description:
-      "Jefferson County United U9/U10 Soccer Fantasy League - Lake Mills.",
-    images: ["/jcu-logo.png"],
-  },
 };
 
 export default function RootLayout({
