@@ -186,7 +186,7 @@ export default function InfoPage() {
 
         <div className="bg-zinc-900 rounded-xl p-6 mb-8">
           <h2 className="text-3xl font-bold mb-4">
-            🚩 Offside
+            🚷 Offside
           </h2>
 
           <Image

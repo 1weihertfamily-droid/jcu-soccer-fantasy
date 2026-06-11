@@ -1,11 +1,15 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 export default async function GamesPage() {
   const { data: games } = await supabase
     .from("games")
     .select("*")
     .order("display_order", { ascending: true });
+
+  
 
   return (
     <main className="min-h-screen bg-black text-white p-6">
