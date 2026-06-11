@@ -138,7 +138,7 @@ const defenseWinners =
       <div className="max-w-6xl mx-auto p-6">
         <div className="text-center mb-10">
           <Image
-            src="/jcu-logo.png"
+            src="/icon.png"
             alt="JCU Logo"
             width={220}
             height={220}
