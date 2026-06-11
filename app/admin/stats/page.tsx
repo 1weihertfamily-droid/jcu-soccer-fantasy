@@ -255,58 +255,69 @@ useEffect(() => {
         </div>
 
         <div className="overflow-x-auto max-h-[70vh]">
-          <table className="border-collapse text-sm w-max">
+          <table className="border-collapse text-sm min-w-full">
             <thead className="sticky top-0 z-30 bg-black">
               <tr className="border-b border-zinc-700 bg-black">
-                <th className="sticky left-0 bg-black text-left p-2 z-40 whitespace-nowrap">
+                <th
+                  className="
+                    sticky left-0
+                    bg-black
+                    text-left
+                    p-2
+                    z-40
+                    min-w-[120px]
+                    md:min-w-[180px]
+                    whitespace-nowrap
+                  "
+                >
                   Player
                 </th>
-                <th className="w-12 md:w-12 text-center">
+                <th className="w-12 md:min-w-[90px] text-center px-2">
                   <span className="hidden md:inline">Goals</span>
                   <span className="md:hidden">G</span>
                 </th>
 
-                <th className="w-12 md:w-12 text-center">
+                <th className="w-12 md:min-w-[90px] text-center px-2">
                   <span className="hidden md:inline">Assists</span>
                   <span className="md:hidden">A</span>
                 </th>
 
-                <th className="w-12 md:w-12 text-center">
+                <th className="w-12 md:min-w-[90px] text-center px-2">
                   <span className="hidden md:inline">Stops</span>
                   <span className="md:hidden">D</span>
                 </th>
 
-                <th className="w-12 md:w-12 text-center">
+                <th className="w-12 md:min-w-[90px] text-center px-2">
                   <span className="hidden md:inline">Saves</span>
                   <span className="md:hidden">S</span>
                 </th>
 
-                <th className="w-12 md:w-12 text-center">
+                <th className="w-12 md:min-w-[90px] text-center px-2">
                   <span className="hidden md:inline">Great Passes</span>
                   <span className="md:hidden">GP</span>
                 </th>
 
-                <th className="w-12 md:w-12 text-center">
+                <th className="w-12 md:min-w-[90px] text-center px-2">
                   <span className="hidden md:inline">Hustle</span>
                   <span className="md:hidden">H</span>
                 </th>
 
-                <th className="w-12 md:w-12 text-center">
+                <th className="w-12 md:min-w-[90px] text-center px-2">
                   <span className="hidden md:inline">Attitude</span>
                   <span className="md:hidden">ATT</span>
                 </th>
 
-                <th className="w-12 md:w-12 text-center">
+                <th className="w-12 md:min-w-[90px] text-center px-2">
                   <span className="hidden md:inline">Sportsmanship</span>
                   <span className="md:hidden">SP</span>
                 </th>
 
-                <th className="w-12 md:w-12 text-center">
+                <th className="w-12 md:min-w-[90px] text-center px-2">
                   <span className="hidden md:inline text-red-300">Penalties</span>
                   <span className="md:hidden text-red-300">P</span>
                 </th>
 
-                <th className="w-12 md:w-12 text-center">
+                <th className="w-12 md:min-w-[90px] text-center px-2">
                   <span className="hidden md:inline text-yellow-400">
                     Yellow Cards
                   </span>
@@ -315,7 +326,7 @@ useEffect(() => {
                   </span>
                 </th>
 
-                <th className="w-12 md:w-12 text-center">
+                <th className="w-12 md:min-w-[90px] text-center px-2">
                   <span className="hidden md:inline text-red-400">
                     Red Cards
                   </span>
@@ -332,7 +343,18 @@ useEffect(() => {
                   key={row.player_id}
                   className="border-b border-zinc-800"
                 >
-                  <td className="sticky left-0 bg-black p-2 font-medium z-10 whitespace-nowrap">
+                  <td
+                    className="
+                      sticky left-0
+                      bg-black
+                      p-2
+                      font-medium
+                      z-10
+                      min-w-[120px]
+                      md:min-w-[180px]
+                      whitespace-nowrap
+                    "
+                  >
                     {row.player_name}
                   </td>
 
@@ -515,7 +537,17 @@ function StatCell({
               : Number(e.target.value)
           )
         }
-        className="w-12 p-1 rounded bg-zinc-800 border border-zinc-700 text-center text-white"
+         className="
+          w-12
+          md:w-20
+          p-1
+          rounded
+          bg-zinc-800
+          border
+          border-zinc-700
+          text-center
+          text-white
+        "
       />
     </td>
   );
