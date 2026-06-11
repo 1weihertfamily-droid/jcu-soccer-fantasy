@@ -32,7 +32,8 @@ export default function AdminPage() {
   const [games, setGames] = useState<Game[]>([]);
   const [players, setPlayers] = useState<Player[]>([]);
   const [selectedGame, setSelectedGame] = useState("");
-const [rows, setRows] = useState<PlayerRow[]>([]);
+  const [roster, setRoster] = useState<number[]>([]);
+  const [rows, setRows] = useState<PlayerRow[]>([]);
 
 useEffect(() => {
   async function loadData() {
@@ -48,6 +49,12 @@ useEffect(() => {
 
       setGames(gamesData);
       setPlayers(playersData);
+
+      setRoster(
+        playersData.map(
+          (player: Player) => player.id
+        )
+      );
 
       setRows(
         playersData.map((player: Player) => ({
@@ -78,83 +85,115 @@ useEffect(() => {
   if (!selectedGame) return;
 
   async function loadStats() {
-    try {
-      console.log(
-        "Loading stats for game:",
-        selectedGame
-      );
+  try {
+    //
+    // Load Stats
+    //
 
-      const res = await fetch(
+    const statsRes =
+      await fetch(
         `/api/stats/${selectedGame}`
       );
 
-      if (!res.ok) {
-        console.error(
-          "Stats endpoint returned:",
-          res.status
-        );
-        return;
-      }
+    const stats =
+      await statsRes.json();
 
-      const stats = await res.json();
+    //
+    // Load Roster
+    //
 
-      console.log("STATS:", stats);
-
-      setRows((currentRows) =>
-        currentRows.map((row) => {
-          const stat = stats.find(
-            (s: any) =>
-              Number(s.player_id) ===
-              Number(row.player_id)
-          );
-
-          if (!stat) {
-            return {
-              ...row,
-              goals: 0,
-              assists: 0,
-              defensive_stops: 0,
-              goal_saves: 0,
-              great_passes: 0,
-              hustle_plays: 0,
-              positive_attitude: 0,
-              good_sportsmanship: 0,
-              penalties: 0,
-              yellow_cards: 0,
-              red_cards: 0,
-            };
-          }
-
-          return {
-            ...row,
-            goals: stat.goals ?? 0,
-            assists: stat.assists ?? 0,
-            defensive_stops:
-              stat.defensive_stops ?? 0,
-            goal_saves: stat.goal_saves ?? 0,
-            great_passes:
-              stat.great_passes ?? 0,
-            hustle_plays:
-              stat.hustle_plays ?? 0,
-            positive_attitude:
-              stat.positive_attitude ?? 0,
-            good_sportsmanship:
-              stat.good_sportsmanship ?? 0,
-            penalties: stat.penalties ?? 0,
-            yellow_cards:
-              stat.yellow_cards ?? 0,
-            red_cards:
-              stat.red_cards ?? 0,
-          };
-        })
+    const rosterRes =
+      await fetch(
+        `/api/game-rosters/${selectedGame}`
       );
-    } catch (err) {
-      console.error(
-        "STAT LOAD ERROR:",
-        err
+
+    const rosterData =
+      await rosterRes.json();
+
+    if (rosterData.length > 0) {
+      setRoster(
+        rosterData.map(
+          (r: any) => r.player_id
+        )
+      );
+    } else {
+      setRoster(
+        players.map(
+          (p) => p.id
+        )
       );
     }
+
+    setRows((currentRows) =>
+      currentRows.map((row) => {
+        const stat =
+          stats.find(
+            (s: any) =>
+              Number(
+                s.player_id
+              ) ===
+              Number(
+                row.player_id
+              )
+          );
+
+        if (!stat) {
+          return {
+            ...row,
+            goals: 0,
+            assists: 0,
+            defensive_stops: 0,
+            goal_saves: 0,
+            great_passes: 0,
+            hustle_plays: 0,
+            positive_attitude: 0,
+            good_sportsmanship: 0,
+            penalties: 0,
+            yellow_cards: 0,
+            red_cards: 0,
+          };
+        }
+
+        return {
+          ...row,
+          goals:
+            stat.goals ?? 0,
+          assists:
+            stat.assists ?? 0,
+          defensive_stops:
+            stat.defensive_stops ??
+            0,
+          goal_saves:
+            stat.goal_saves ?? 0,
+          great_passes:
+            stat.great_passes ??
+            0,
+          hustle_plays:
+            stat.hustle_plays ??
+            0,
+          positive_attitude:
+            stat.positive_attitude ??
+            0,
+          good_sportsmanship:
+            stat.good_sportsmanship ??
+            0,
+          penalties:
+            stat.penalties ?? 0,
+          yellow_cards:
+            stat.yellow_cards ??
+            0,
+          red_cards:
+            stat.red_cards ?? 0,
+        };
+      })
+    );
+  } catch (err) {
+    console.error(
+      "LOAD ERROR",
+      err
+    );
   }
+}
 
   loadStats();
 }, [selectedGame]);
@@ -176,6 +215,16 @@ useEffect(() => {
     );
   }
 
+function toggleRoster(playerId: number) {
+  setRoster((current) =>
+    current.includes(playerId)
+      ? current.filter(
+          (id) => id !== playerId
+        )
+      : [...current, playerId]
+  );
+}
+
   async function handleSave() {
   if (!selectedGame) {
     alert("Please select a game.");
@@ -191,9 +240,10 @@ useEffect(() => {
           "application/json",
       },
       body: JSON.stringify({
-        game_id: selectedGame,
-        rows,
-      }),
+      game_id: selectedGame,
+      rows,
+      roster,
+    }),
     }
   );
 
@@ -252,6 +302,44 @@ useEffect(() => {
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="mb-8 bg-zinc-900 rounded-xl p-5">
+          <h2 className="text-xl font-bold mb-4">
+            Players Present
+          </h2>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+            {players.map((player) => (
+              <label
+                key={player.id}
+                className="
+                  flex items-center gap-2
+                  bg-zinc-800
+                  rounded
+                  p-2
+                  cursor-pointer
+                  hover:bg-zinc-700
+                "
+              >
+                <input
+                  type="checkbox"
+                  checked={roster.includes(
+                    player.id
+                  )}
+                  onChange={() =>
+                    toggleRoster(player.id)
+                  }
+                />
+
+                <span>{player.name}</span>
+              </label>
+            ))}
+          </div>
+
+          <div className="mt-4 text-sm text-zinc-400">
+            Selected: {roster.length} players
+          </div>
         </div>
 
         <div className="overflow-x-auto max-h-[70vh]">

@@ -1,11 +1,15 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { game_id, rows } = body;
+    const {
+      game_id,
+      rows,
+      roster,
+    } = body;
 
     const rowsToSave = rows.map((row: any) => ({
       game_id: Number(game_id),
@@ -24,19 +28,79 @@ export async function POST(request: Request) {
       red_cards: row.red_cards,
     }));
 
-    const { error } = await supabase
-      .from("player_stats")
-      .upsert(rowsToSave, {
-        onConflict: "game_id,player_id",
-      });
+    const { error: statsError } =
+      await supabaseAdmin
+        .from("player_stats")
+        .upsert(rowsToSave, {
+          onConflict:
+            "game_id,player_id",
+        });
 
-    if (error) {
-      console.error(error);
+    if (statsError) {
+      console.error(statsError);
 
       return NextResponse.json(
-        { error: error.message },
+        { error: statsError.message },
         { status: 500 }
       );
+    }
+
+    // ---------------------------------
+    // Save roster
+    // ---------------------------------
+
+    if (Array.isArray(roster)) {
+      const { error: deleteError } =
+        await supabaseAdmin
+          .from("game_rosters")
+          .delete()
+          .eq(
+            "game_id",
+            Number(game_id)
+          );
+
+      if (deleteError) {
+        console.error(deleteError);
+
+        return NextResponse.json(
+          {
+            error:
+              deleteError.message,
+          },
+          { status: 500 }
+        );
+      }
+
+      if (roster.length > 0) {
+        const rosterRows =
+          roster.map(
+            (playerId: number) => ({
+              game_id:
+                Number(game_id),
+              player_id: playerId,
+            })
+          );
+
+        const {
+          error: rosterError,
+        } = await supabaseAdmin
+          .from("game_rosters")
+          .insert(rosterRows);
+
+        if (rosterError) {
+          console.error(
+            rosterError
+          );
+
+          return NextResponse.json(
+            {
+              error:
+                rosterError.message,
+            },
+            { status: 500 }
+          );
+        }
+      }
     }
 
     return NextResponse.json({
@@ -46,7 +110,10 @@ export async function POST(request: Request) {
     console.error(err);
 
     return NextResponse.json(
-      { error: "Failed to save stats" },
+      {
+        error:
+          "Failed to save stats",
+      },
       { status: 500 }
     );
   }
