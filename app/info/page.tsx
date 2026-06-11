@@ -139,7 +139,7 @@ export default function InfoPage() {
 
         <div className="bg-zinc-900 rounded-xl p-6 mb-8">
           <h2 className="text-3xl font-bold mb-4">
-            ⚽  Ball In Play (A & B) vs Out of Play (C & D)
+            ⚽  Ball In Play vs Out of Play
           </h2>
 
           <Image
@@ -151,9 +151,9 @@ export default function InfoPage() {
           />
 
           <p className="text-zinc-300">
-            A ball is in play as long as it stays within the field boundaries 
+            A ball is in play (A, B & C) as long as it stays within the field boundaries 
             and doesn't touch the ground outside the lines. 
-            If the ball completely crosses the goal line or sideline, 
+            If the ball completely crosses the goal line or sideline (D), 
             it's out of play and results in a restart
             (goal kick, corner kick, or throw-in) depending on how it went out.
           </p>
