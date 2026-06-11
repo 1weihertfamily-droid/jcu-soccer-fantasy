@@ -47,12 +47,15 @@ export default async function Home() {
 
 const { data: votingGame } = await supabase
   .from("games")
-  .select("id")
+  .select("id, name")
   .eq("voting_open", true)
   .single();
 
 const latestGameId =
   votingGame?.id ?? 0;
+
+const latestGameName =
+  votingGame?.name ?? `Game ${latestGameId}`;
 
 const { data: ballots } = await supabase
   .from("ballots")
@@ -210,13 +213,14 @@ const defenseWinners =
       🥇 Latest Award Winners
     </h2>
 
-    <p className="text-zinc-400">
-      Game {latestGameId}
-    </p>
-
     <p className="text-sm text-blue-400 mt-1">
       View Full Awards Results →
     </p>
+
+     <p className="text-zinc-400 mt-4 font-bold">
+      {latestGameName} ~ Voting Results
+    </p>
+
   </div>
 
   <div className="grid md:grid-cols-3 gap-4 mt-8 cursor-pointer">
