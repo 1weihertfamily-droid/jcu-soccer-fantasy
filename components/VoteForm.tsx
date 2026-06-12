@@ -162,7 +162,7 @@ if (
 
       <div>
   <label className="block mb-2 font-semibold">
-    🏆 GOAT
+    🏆 GOAT (Pick 3 of the Games Goats)
   </label>
 
   <div className="space-y-2">
@@ -203,7 +203,7 @@ if (
 
       <div>
   <label className="block mb-2 font-semibold">
-    🔥 Hardest Worker
+    🔥 Hardest Worker (Pick 3)
   </label>
 
   <div className="space-y-2">
@@ -244,7 +244,7 @@ if (
 
       <div>
   <label className="block mb-2 font-semibold">
-    🛡️ Unstoppable Defense
+    🛡️ Unstoppable Defense (Pick 3)
   </label>
 
   <div className="space-y-2">
