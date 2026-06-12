@@ -6,17 +6,30 @@ export default function InfoPage() {
     <main className="min-h-screen bg-black text-white p-8">
       <div className="max-w-5xl mx-auto">
 
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-5xl font-bold">
-            ⚽ Soccer Information Center
-          </h1>
+        <div className="mb-8">
+          <div className="flex justify-between items-center">
+            <h1 className="text-5xl font-bold">
+              ⚽ Soccer Information Center
+            </h1>
 
-          <Link
-            href="/"
-            className="bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded"
-          >
-            ← Back to Home
-          </Link>
+            <div className="hidden md:block">
+              <Link
+                href="/"
+                className="bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded"
+              >
+                ← Back to Home
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-4 md:hidden">
+            <Link
+              href="/"
+              className="inline-block bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded"
+            >
+              ← Back to Home
+            </Link>
+          </div>
         </div>
 
         <div className="bg-zinc-900 rounded-xl p-6 mb-8">
