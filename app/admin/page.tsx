@@ -25,6 +25,14 @@ export default function AdminDashboard() {
     },
     
     {
+      title: "Scoring",
+      description:
+        "Manage the scoring system.",
+      href: "/admin/scoring",
+      emoji: "🔢",
+    },
+
+    {
       title: "Public Site",
       description:
         "View the public-facing application.",
