@@ -144,6 +144,10 @@ export default function AdminPlayersPage() {
                 </th>
 
                 <th className="text-center p-4">
+                  Profile
+                </th>
+
+                <th className="text-center p-4">
                   Save
                 </th>
               </tr>
@@ -195,18 +199,35 @@ export default function AdminPlayersPage() {
                   </td>
 
                   <td className="text-center">
+                    <Link
+                      href={`/players/${player.id}`}
+                      target="_blank"
+                      className="
+                        inline-block
+                        bg-blue-600 hover:bg-blue-700
+                        px-4 py-2 rounded
+                        font-semibold
+                      "
+                    >
+                      Open
+                    </Link>
+                  </td>
+
+                  <td className="text-center">
                     <button
                       onClick={() =>
                         updatePlayer(
                           player.id,
                           {
                             name: player.name,
-                            active:
-                              player.active,
+                            active: player.active,
                           }
                         )
                       }
-                      className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
+                      className="
+                        bg-red-600 hover:bg-red-700
+                        px-4 py-2 rounded
+                      "
                     >
                       Save
                     </button>

@@ -48,13 +48,6 @@ export default function AdminDashboard() {
       emoji: "🏆",
     },
 
-    {
-      title: "Player Profiles",
-      description:
-        "Preview player profile pages.",
-      href: "/admin/player-profiles",
-      emoji: "👤",
-    },
   ];
 
   return (
