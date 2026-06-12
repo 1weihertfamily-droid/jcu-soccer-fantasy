@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import AdminBackButton from "@/components/AdminBackButton";
 
 type Player = {
   id: number;
@@ -90,17 +91,9 @@ export default function AdminPlayersPage() {
             Manage Players
           </h1>
 
-          <Link
-            href="/admin"
-            className="
-              bg-blue-600 hover:bg-blue-800
-              px-4 py-2 rounded
-              text-center
-              w-full sm:w-auto
-            "
-          >
-            ← Back to Dashboard
-          </Link>
+          <div className="w-full sm:w-auto">
+            <AdminBackButton />
+          </div>
         </div>
 
         <div className="bg-zinc-900 p-6 rounded-xl mb-8">

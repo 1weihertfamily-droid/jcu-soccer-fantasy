@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { calculateFantasyPoints } from "@/lib/scoring";
+import AdminBackButton from "@/components/AdminBackButton";
 
 type Props = {
   params: Promise<{
@@ -255,13 +256,8 @@ export default async function PlayerPage({
 
           </table>
         </div>
-        <div className="mt-8 mb-6">
-          <Link
-            href="/admin/"
-            className="inline-block bg-zinc-600 hover:bg-red-600 px-4 py-2 rounded"
-          >
-            ← Back to Admin Dashboard
-          </Link>
+        <div className="w-full sm:w-auto">
+          <AdminBackButton />
         </div>
     </main>
     

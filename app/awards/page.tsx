@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import AdminBackButton from "@/components/AdminBackButton";
 
 type AwardPlayer = {
   playerName: string;
@@ -106,16 +107,12 @@ const filteredGames = useMemo(() => {
   selectedPlayer,
 ]);
 
-  function renderPlayer(
-    player:
-      | AwardPlayer
-      | undefined
-  ) {
+  function renderPlayer(player: AwardPlayer | undefined) {
     if (!player) return "-";
 
-const highlighted =
-  selectedPlayer !== "all" &&
-  String(player.playerId) === selectedPlayer;
+    const highlighted =
+      selectedPlayer !== "all" &&
+      String(player.playerId) === selectedPlayer;
 
     return (
       <>
@@ -357,13 +354,8 @@ const highlighted =
           </div>
         ))}
 
-        <div className="mb-6">
-          <Link
-            href="/admin/"
-            className="inline-block bg-zinc-600 hover:bg-red-600 px-4 py-2 rounded"
-          >
-            ← Back to Admin Dashboard
-          </Link>
+        <div className="w-full sm:w-auto">
+          <AdminBackButton />
         </div>
       </div>
     </main>
