@@ -64,9 +64,11 @@ export default async function GamesPage() {
                   )}
                 </div>
 
-                <p className="text-zinc-400">
-                  Game #{game.id}
-                </p>
+                {game.game_date && (
+                  <p className="text-zinc-400 text-sm">
+                    {new Date(game.game_date).toLocaleDateString()}
+                  </p>
+                )}
 
                 <div className="mt-4 text-blue-400 text-sm">
                   View Game Details →

@@ -24,6 +24,7 @@ export async function POST(
 ) {
   const {
   name,
+  game_date,
   display_order,
 } = await request.json();
 
@@ -40,6 +41,10 @@ export async function POST(
       .insert([
         {
           name: name.trim(),
+          game_date:
+            game_date === ""
+              ? null
+              : game_date,
           active: true,
           voting_open: true,
           display_order:

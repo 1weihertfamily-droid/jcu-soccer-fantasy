@@ -13,6 +13,7 @@ import Link from "next/link";
 type Game = {
   id: number;
   name: string;
+  game_date: string | null;
   active: boolean;
   voting_open: boolean;
   display_order: number | null;
@@ -283,6 +284,10 @@ async function clearGameStats(
                   Game Name
                 </th>
 
+                <th className="p-2 text-left">
+                  Date
+                </th>
+
                 <th className="text-center p-4">
                   Active
                 </th>
@@ -365,6 +370,54 @@ async function clearGameStats(
                                   }
                                   className="w-full p-2 rounded bg-zinc-800 border border-zinc-700"
                                 />
+                              </td>
+
+                              <td className="p-4">
+                                <div className="flex gap-2 items-center">
+                                  <input
+                                    type="date"
+                                    value={game.game_date ?? ""}
+                                    onChange={(e) =>
+                                      setGames((current) =>
+                                        current.map((g) =>
+                                          g.id === game.id
+                                            ? {
+                                                ...g,
+                                                game_date:
+                                                  e.target.value === ""
+                                                    ? null
+                                                    : e.target.value,
+                                              }
+                                            : g
+                                        )
+                                      )
+                                    }
+                                    className="p-2 rounded bg-zinc-800 border border-zinc-700"
+                                  />
+
+                                  <button
+                                    onClick={() =>
+                                      setGames((current) =>
+                                        current.map((g) =>
+                                          g.id === game.id
+                                            ? {
+                                                ...g,
+                                                game_date: null,
+                                              }
+                                            : g
+                                        )
+                                      )
+                                    }
+                                    className="
+                                      bg-zinc-700
+                                      hover:bg-red-600
+                                      px-2 py-1
+                                      rounded
+                                    "
+                                  >
+                                    ✕
+                                  </button>
+                                </div>
                               </td>
 
                               <td className="text-center">

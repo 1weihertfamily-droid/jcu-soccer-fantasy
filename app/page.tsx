@@ -418,6 +418,12 @@ const defenseWinners =
                   <div className="text-lg font-semibold">
                     {game.name}
                   </div>
+
+                  {game.game_date && (
+                    <div className="text-sm text-zinc-400 mt-1">
+                      {new Date(game.game_date).toLocaleDateString()}
+                    </div>
+                  )}
                 </Link>
               ))}
                 
