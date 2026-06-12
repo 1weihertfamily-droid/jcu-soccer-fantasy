@@ -155,6 +155,25 @@ const filteredGames = useMemo(() => {
           </Link>
         </div>
 
+        <Link
+          href="/games"
+          className="
+            block
+            mb-8
+            bg-green-600
+            hover:bg-green-700
+            text-white
+            text-center
+            font-bold
+            text-xl
+            py-4
+            rounded-xl
+            transition
+          "
+        >
+          🗳️ Vote For Player Awards
+        </Link>
+
         {/* Filters */}
 
         <div className="bg-zinc-900 rounded-xl p-5 mb-8">
@@ -355,8 +374,8 @@ const filteredGames = useMemo(() => {
         ))}
 
         <div className="w-full sm:w-auto">
-          <AdminBackButton />
-        </div>
+        <AdminBackButton />
+      </div>
       </div>
     </main>
   );
