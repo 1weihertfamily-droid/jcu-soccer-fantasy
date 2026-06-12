@@ -1,4 +1,5 @@
 import HomeButton from "@/components/HomeButton";
+import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -19,12 +20,9 @@ export default function InfoPage() {
           </div>
 
           <div className="mt-4 md:hidden">
-            <Link
-              href="/"
-              className="inline-block bg-blue-600 hover:bg-blue-800 px-4 py-2 rounded"
-            >
-              ← Back to Home
-            </Link>
+            
+             <HomeButton />
+             
           </div>
         </div>
 
