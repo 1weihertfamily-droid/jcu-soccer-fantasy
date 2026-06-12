@@ -27,22 +27,30 @@ export default async function VotePage({
     .order("name");
 
   return (
-    <main className="min-h-screen bg-black text-white p-8">
-      <div className="mb-6">
-            <HomeButton />
-            </div>
-      <h1 className="text-4xl font-bold mb-2">
-        Parent Voting
-      </h1>
+  <main className="min-h-screen bg-black text-white p-8">
+    <div className="max-w-5xl mx-auto">
 
-      <h2 className="text-xl mb-8 text-zinc-400">
-        {game?.name}
-      </h2>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+        <div>
+          <h1 className="text-4xl font-bold">
+            Parent Voting
+          </h1>
+
+          <h2 className="text-xl mt-2 text-zinc-400">
+            {game?.name}
+          </h2>
+        </div>
+
+        <div className="w-full sm:w-auto">
+          <HomeButton />
+        </div>
+      </div>
 
       <VoteForm
         gameId={Number(gameId)}
         players={players ?? []}
       />
-    </main>
-  );
-}
+
+    </div>
+  </main>
+);}

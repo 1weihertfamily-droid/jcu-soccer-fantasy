@@ -2,6 +2,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { calculateFantasyPoints } from "@/lib/scoring";
 import AdminBackButton from "@/components/AdminBackButton";
+import HomeButton from "@/components/HomeButton";
 
 type Props = {
   params: Promise<{
@@ -136,18 +137,7 @@ export default async function PlayerPage({
             {fantasyPoints} Fantasy Points
           </p>
         </div>
-
-        <Link
-          href="/"
-          className="
-            bg-blue-600 hover:bg-blue-800
-            px-4 py-2 rounded
-            text-center
-            w-full sm:w-auto
-          "
-        >
-          ← Back Home
-        </Link>
+        <HomeButton />
       </div>
 
         {/* Awards */}
