@@ -9,6 +9,7 @@ import {
 } from "@hello-pangea/dnd";
 
 import Link from "next/link";
+import AdminDashboardButton from "@/components/AdminDashboardButton";
 
 type Game = {
   id: number;
@@ -231,17 +232,7 @@ async function clearGameStats(
             Manage Games
           </h1>
 
-          <Link
-            href="/admin"
-            className="
-              bg-blue-600 hover:bg-blue-800
-              px-4 py-2 rounded
-              text-center
-              w-full sm:w-auto
-            "
-          >
-            ← Back to Dashboard
-          </Link>
+          <AdminDashboardButton />
         </div>
 
         <div className="bg-zinc-900 p-6 rounded-xl mb-8">

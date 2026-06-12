@@ -285,7 +285,7 @@ if (
 
       <button
         onClick={handleSubmit}
-        className="bg-red-600 hover:bg-red-700 px-6 py-3 rounded font-bold"
+        className="bg-green-600 hover:bg-green-700 px-6 py-3 rounded font-bold"
       >
         Submit Vote
       </button>

@@ -1,5 +1,6 @@
 "use client";
 
+import AdminDashboardButton from "@/components/AdminDashboardButton";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -65,17 +66,7 @@ export default function ScoringPage() {
             Fantasy Point Values
           </h1>
 
-          <Link
-            href="/admin"
-            className="
-              bg-blue-600
-              hover:bg-blue-800
-              px-4 py-2
-              rounded
-            "
-          >
-            ← Back Dashboard
-          </Link>
+          <AdminDashboardButton />
         </div>
 
         <div className="bg-zinc-900 rounded-xl overflow-hidden">

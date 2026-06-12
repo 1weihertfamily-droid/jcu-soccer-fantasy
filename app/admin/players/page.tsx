@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import AdminBackButton from "@/components/AdminBackButton";
+import AdminDashboardButton from "@/components/AdminDashboardButton";
 
 type Player = {
   id: number;
@@ -91,9 +92,7 @@ export default function AdminPlayersPage() {
             Manage Players
           </h1>
 
-          <div className="w-full sm:w-auto">
-            <AdminBackButton />
-          </div>
+          <AdminDashboardButton />
         </div>
 
         <div className="bg-zinc-900 p-6 rounded-xl mb-8">

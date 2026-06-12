@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import HomeButton from "@/components/HomeButton";
 
 export const dynamic = "force-dynamic";
 
@@ -25,12 +26,7 @@ export default async function GamesPage() {
             </p>
           </div>
 
-          <Link
-            href="/"
-            className="bg-blue-600 hover:bg-blue-800 text-white px-6 py-3 rounded-lg transition"
-          >
-            ← Back Home
-          </Link>
+          <HomeButton />
         </div>
 
         {!games?.length ? (

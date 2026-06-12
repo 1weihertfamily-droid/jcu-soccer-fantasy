@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import VoteForm from "@/components/VoteForm";
+import HomeButton from "@/components/HomeButton";
 
 type Props = {
   params: Promise<{
@@ -28,12 +29,7 @@ export default async function VotePage({
   return (
     <main className="min-h-screen bg-black text-white p-8">
       <div className="mb-6">
-            <Link
-                href="/"
-                className="inline-block bg-zinc-700 hover:bg-zinc-600 text-white px-4 py-2 rounded-lg"
-            >
-                ← Back to Home
-            </Link>
+            <HomeButton />
             </div>
       <h1 className="text-4xl font-bold mb-2">
         Parent Voting

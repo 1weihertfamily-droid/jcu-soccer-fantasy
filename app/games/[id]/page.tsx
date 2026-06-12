@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { calculateFantasyPoints } from "@/lib/scoring";
+import HomeButton from "@/components/HomeButton";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -162,18 +163,7 @@ const displayStat = (value: number) =>
           Vote For Awards
         </Link>
 
-        <Link
-          href="/"
-          className="
-            bg-blue-600 hover:bg-blue-800
-            text-white
-            px-6 py-3 rounded-lg transition
-            text-center
-            w-full sm:w-auto
-          "
-        >
-          ← Back Home
-        </Link>
+        <HomeButton />
 
       </div>
 

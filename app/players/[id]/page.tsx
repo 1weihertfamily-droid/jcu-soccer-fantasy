@@ -256,7 +256,7 @@ export default async function PlayerPage({
 
           </table>
         </div>
-        <div className="w-full sm:w-auto">
+        <div className="w-full sm:w-auto mt-8">
           <AdminBackButton />
         </div>
     </main>

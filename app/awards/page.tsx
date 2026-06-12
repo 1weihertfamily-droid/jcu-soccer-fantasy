@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import AdminBackButton from "@/components/AdminBackButton";
+import HomeButton from "@/components/HomeButton";
 
 type AwardPlayer = {
   playerName: string;
@@ -147,12 +148,7 @@ const filteredGames = useMemo(() => {
             Awards Results
           </h1>
 
-          <Link
-            href="/"
-            className="bg-blue-600 hover:bg-blue-800 text-white px-6 py-3 rounded-lg transition"
-          >
-            ← Back to Home
-          </Link>
+          <HomeButton />
         </div>
 
         <Link
