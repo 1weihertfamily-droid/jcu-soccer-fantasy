@@ -5,6 +5,7 @@ export async function POST(req: Request) {
   try {
     const {
       gameId,
+      voterId,
       voterName,
       goatVotes,
       hardestWorkerVotes,
@@ -13,6 +14,7 @@ export async function POST(req: Request) {
 
     console.log("VOTE REQUEST:", {
       gameId,
+      voterId,
       voterName,
       goatVotes,
       hardestWorkerVotes,
@@ -41,6 +43,24 @@ export async function POST(req: Request) {
       );
     }
 
+    const { data: existingVote } =
+      await supabaseAdmin
+        .from("ballots")
+        .select("id")
+        .eq("game_id", gameId)
+        .eq("voter_id", voterId)
+        .maybeSingle();
+
+    if (existingVote) {
+      return NextResponse.json(
+        {
+          error:
+            "You have already voted for this game.",
+        },
+        { status: 400 }
+      );
+    }
+
     const {
       data: ballot,
       error: ballotError,
@@ -48,6 +68,7 @@ export async function POST(req: Request) {
       .from("ballots")
       .insert({
         game_id: gameId,
+        voter_id: voterId,
         voter_name: voterName,
       })
       .select()

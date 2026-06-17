@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react"; 
+import { getVoterId } from "@/lib/voter";
 
 type Player = {
   id: number;
@@ -24,6 +25,21 @@ export default function VoteForm({
   "",
 ]);
 
+const [alreadyVoted, setAlreadyVoted] =
+  useState(false);
+
+useEffect(() => { 
+  async function checkVote() {
+     const voterId = getVoterId();
+     const res = await fetch(
+       `/api/vote/check?gameId=${gameId}&voterId=${voterId}` 
+      ); 
+      const data = await res.json(); 
+      setAlreadyVoted(data.alreadyVoted); 
+    } 
+    
+    checkVote(); 
+}, [gameId]);  
 const [workerVotes, setWorkerVotes] =
   useState(["", "", ""]);
 
@@ -103,17 +119,19 @@ if (
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-  gameId,
-  voterName,
-  goatVotes:
-    goatVotes.map(Number),
+        gameId,
+        voterId: getVoterId(),
+        voterName,
 
-  hardestWorkerVotes:
-    workerVotes.map(Number),
+        goatVotes:
+          goatVotes.map(Number),
 
-  unstoppableDefenseVotes:
-    defenseVotes.map(Number),
-}),
+        hardestWorkerVotes:
+          workerVotes.map(Number),
+
+        unstoppableDefenseVotes:
+          defenseVotes.map(Number),
+      }),
     });
 
     const data = await res.json();
@@ -141,6 +159,19 @@ if (
         </p>
       </div>
     );
+  }
+
+if (alreadyVoted) { 
+  return (
+    <div className="bg-zinc-900 rounded-xl p-8 text-center"> 
+      <h2 className="text-3xl font-bold mb-4">
+        🗳️ Vote Already Submitted 
+        </h2> 
+        <p className="text-zinc-300"> 
+          This device has already voted for this game. 
+        </p> 
+    </div> 
+    ); 
   }
 
   return (
