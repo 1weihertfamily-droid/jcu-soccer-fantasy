@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       hardestWorkerVotes,
       unstoppableDefenseVotes,
     });
-
+console.log("VOTER ID RECEIVED:", voterId);
     const allSelections = [
       ...goatVotes,
       ...hardestWorkerVotes,
@@ -60,6 +60,12 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+console.log({
+  game_id: gameId,
+  voter_id: voterId,
+  voter_name: voterName,
+});
 
     const {
       data: ballot,
