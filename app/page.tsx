@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { buildLeaderboard } from "@/lib/leaderboard";
+import WelcomePopup from "@/components/WelcomePopup";
 
 export const dynamic = "force-dynamic";
 
@@ -189,6 +190,7 @@ const defenseWinners =
 
   return (
     <main className="min-h-screen bg-black text-white">
+      <WelcomePopup />
       <div className="max-w-6xl mx-auto p-6">
         <div className="text-center mb-10">
           <Image
