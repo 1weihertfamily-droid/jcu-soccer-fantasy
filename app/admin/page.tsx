@@ -33,6 +33,14 @@ export default function AdminDashboard() {
     },
 
     {
+      title: "Seasons",
+      description:
+        "Create and manage soccer seasons.",
+      href: "/admin/seasons",
+      emoji: "🏁",
+    },
+
+    {
       title: "Public Site",
       description:
         "View the public-facing application.",

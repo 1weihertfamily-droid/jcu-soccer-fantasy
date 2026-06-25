@@ -18,11 +18,44 @@ type Game = {
   active: boolean;
   voting_open: boolean;
   display_order: number | null;
+  season_id: number | null;
+};
+
+type Season = {
+  id: number;
+  name: string;
+  active: boolean;
 };
 
 export default function AdminGamesPage() {
   const [games, setGames] = useState<Game[]>([]);
+  const [seasons, setSeasons] =
+  useState<Season[]>([]);
+
+const [selectedSeason, setSelectedSeason] =
+  useState<number | null>(null);
   const [newGame, setNewGame] = useState("");
+
+async function loadSeasons() {
+  const res = await fetch(
+    "/api/admin/seasons"
+  );
+
+  const data = await res.json();
+
+  setSeasons(data);
+
+  const activeSeason =
+    data.find(
+      (s: Season) => s.active
+    );
+
+  if (activeSeason) {
+    setSelectedSeason(
+      activeSeason.id
+    );
+  }
+}
 
  async function loadGames() {
   const res = await fetch("/api/admin/games");
@@ -63,6 +96,7 @@ function handleDragEnd(result: any) {
 }
 
 useEffect(() => {
+  loadSeasons();
   loadGames();
 }, []);
 
@@ -79,6 +113,7 @@ async function addGame() {
       },
       body: JSON.stringify({
         name: newGame,
+        season_id: selectedSeason,
         display_order:
           games.length + 1,
       }),
@@ -224,7 +259,17 @@ async function clearGameStats(
     "Game stats successfully cleared."
   );
 }
-  return (
+  
+const filteredGames =
+  selectedSeason === null
+    ? games
+    : games.filter(
+        (g) =>
+          g.season_id ===
+          selectedSeason
+      );
+
+return (
     <main className="min-h-screen bg-black text-white p-8">
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
@@ -261,6 +306,38 @@ async function clearGameStats(
               Add
             </button>
           </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="block mb-2 text-sm text-zinc-400">
+            Season
+          </label>
+
+          <select
+            value={selectedSeason ?? ""}
+            onChange={(e) =>
+              setSelectedSeason(
+                Number(e.target.value)
+              )
+            }
+            className="
+              bg-zinc-800
+              border border-zinc-700
+              rounded
+              p-3
+              w-full
+              max-w-sm
+            "
+          >
+            {seasons.map((season) => (
+              <option
+                key={season.id}
+                value={season.id}
+              >
+                {season.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="bg-zinc-900 rounded-xl overflow-hidden">
@@ -306,7 +383,7 @@ async function clearGameStats(
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    {games.map(
+                    {filteredGames.map(
                       (game, index) => (
                         <Draggable
                           key={String(game.id)}
