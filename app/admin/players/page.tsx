@@ -9,27 +9,72 @@ type Player = {
   id: number;
   name: string;
   active: boolean;
+  season_id: number | null;
+};
+
+type Season = {
+  id: number;
+  name: string;
+  active: boolean;
 };
 
 export default function AdminPlayersPage() {
   const [players, setPlayers] = useState<Player[]>([]);
+  const [seasons, setSeasons] =
+  useState<Season[]>([]);
+
+  const [selectedSeason, setSelectedSeason] =
+  useState<number | null>(null);
   const [newPlayer, setNewPlayer] = useState("");
 
-  async function loadPlayers() {
-    const res = await fetch("/api/admin/players");
-
-    if (!res.ok) {
-      alert("Failed to load players");
-      return;
-    }
+  async function loadSeasons() {
+    const res = await fetch("/api/admin/seasons");
 
     const data = await res.json();
-    setPlayers(data);
+
+    setSeasons(data);
+
+    const activeSeason =
+      data.find((s: Season) => s.active);
+
+    if (activeSeason) {
+      setSelectedSeason(activeSeason.id);
+    }
   }
 
+  async function loadPlayers() {
+  if (!selectedSeason) return;
+
+  const res = await fetch(
+    `/api/admin/players?seasonId=${selectedSeason}`
+  );
+
+  if (!res.ok) {
+    alert("Failed to load players");
+    return;
+  }
+
+  const data = await res.json();
+  setPlayers(data);
+}
+
   useEffect(() => {
-    loadPlayers();
+  loadSeasons();
   }, []);
+
+  useEffect(() => {
+    if (selectedSeason !== null) {
+      loadPlayers();
+    }
+  }, [selectedSeason]);
+
+const filteredPlayers =
+  selectedSeason === null
+    ? players
+    : players.filter(
+        (player) =>
+          player.season_id === selectedSeason
+      );
 
   async function addPlayer() {
     if (!newPlayer.trim()) return;
@@ -44,6 +89,7 @@ export default function AdminPlayersPage() {
         },
         body: JSON.stringify({
           name: newPlayer,
+          season_id: selectedSeason,
         }),
       }
     );
@@ -100,6 +146,36 @@ export default function AdminPlayersPage() {
             Add Player
           </h2>
 
+        <div className="mb-6">
+          <label className="block mb-2 text-sm text-zinc-400">
+            Season
+          </label>
+
+          <select
+            value={selectedSeason ?? ""}
+            onChange={(e) =>
+              setSelectedSeason(Number(e.target.value))
+            }
+            className="
+              bg-zinc-800
+              border border-zinc-700
+              rounded
+              p-3
+              w-full
+              max-w-sm
+            "
+          >
+            {seasons.map((season) => (
+              <option
+                key={season.id}
+                value={season.id}
+              >
+                {season.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
           <div className="flex flex-col sm:flex-row gap-3">
             <input
               value={newPlayer}
@@ -146,7 +222,7 @@ export default function AdminPlayersPage() {
             </thead>
 
             <tbody>
-              {players.map((player) => (
+              {filteredPlayers.map((player) => (
                 <tr
                   key={player.id}
                   className="border-b border-zinc-800"

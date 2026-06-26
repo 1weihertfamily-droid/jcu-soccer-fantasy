@@ -2,12 +2,13 @@ import Link from "next/link";
 
 export default function AdminDashboard() {
   const cards = [
+    
     {
-      title: "Players",
+      title: "Seasons",
       description:
-        "Add, edit, and manage player roster.",
-      href: "/admin/players",
-      emoji: "⚽",
+        "Create and manage soccer seasons.",
+      href: "/admin/seasons",
+      emoji: "🏁",
     },
     {
       title: "Games",
@@ -17,13 +18,19 @@ export default function AdminDashboard() {
       emoji: "📅",
     },
     {
+      title: "Players",
+      description:
+        "Add, edit, and manage player roster.",
+      href: "/admin/players",
+      emoji: "⚽",
+    },
+    {
       title: "Stats",
       description:
         "Enter and edit player stats.",
       href: "/admin/stats",
       emoji: "📊",
     },
-    
     {
       title: "Scoring",
       description:
@@ -31,15 +38,6 @@ export default function AdminDashboard() {
       href: "/admin/scoring",
       emoji: "🔢",
     },
-
-    {
-      title: "Seasons",
-      description:
-        "Create and manage soccer seasons.",
-      href: "/admin/seasons",
-      emoji: "🏁",
-    },
-
     {
       title: "Public Site",
       description:
@@ -47,7 +45,6 @@ export default function AdminDashboard() {
       href: "/",
       emoji: "🌎",
     },
-
     {
       title: "Awards",
       description:

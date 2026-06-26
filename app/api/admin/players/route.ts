@@ -2,11 +2,24 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
 // GET ALL PLAYERS
-export async function GET() {
-  const { data, error } = await supabaseAdmin
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+
+  const seasonId = searchParams.get("seasonId");
+
+  let query = supabaseAdmin
     .from("players")
     .select("*")
     .order("name");
+
+  if (seasonId) {
+    query = query.eq(
+      "season_id",
+      Number(seasonId)
+    );
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     return NextResponse.json(
@@ -22,7 +35,7 @@ export async function GET() {
 export async function POST(
   request: Request
 ) {
-  const { name } = await request.json();
+  const { name, season_id } = await request.json();
 
   if (!name?.trim()) {
     return NextResponse.json(
@@ -38,6 +51,7 @@ export async function POST(
         {
           name: name.trim(),
           active: true,
+          season_id: season_id,
         },
       ])
       .select()
@@ -61,6 +75,7 @@ export async function PATCH(
     id,
     name,
     active,
+    season_id
   } = await request.json();
 
   if (!id) {
@@ -73,6 +88,7 @@ export async function PATCH(
   const updates: {
     name?: string;
     active?: boolean;
+    season_id?: number | null;
   } = {};
 
   if (typeof name === "string") {
@@ -81,6 +97,13 @@ export async function PATCH(
 
   if (typeof active === "boolean") {
     updates.active = active;
+  }
+
+  if (
+    typeof season_id === "number" ||
+    season_id === null
+  ) {
+    updates.season_id = season_id;
   }
 
   const { data, error } =
