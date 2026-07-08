@@ -13,6 +13,12 @@ type Game = {
   name: string;
 };
 
+type Season = {
+  id: number;
+  name: string;
+  active: boolean;
+};
+
 type PlayerRow = {
   player_id: number;
   player_name: string;
@@ -31,34 +37,51 @@ type PlayerRow = {
 
 export default function AdminPage() {
   const [games, setGames] = useState<Game[]>([]);
+  const [seasons, setSeasons] = useState<Season[]>([]);
+
+  const [selectedSeason, setSelectedSeason] =
+  useState<number | null>(null);
   const [players, setPlayers] = useState<Player[]>([]);
   const [selectedGame, setSelectedGame] = useState("");
   const [roster, setRoster] = useState<number[]>([]);
   const [rows, setRows] = useState<PlayerRow[]>([]);
 
 useEffect(() => {
-  async function loadData() {
+  async function loadSeasons() {
     try {
-      const gamesRes = await fetch("/api/games");
-      const playersRes = await fetch("/api/players");
+      const res = await fetch("/api/admin/seasons");
+      if (!res.ok) throw new Error("Failed to load seasons");
+      const data: Season[] = await res.json();
+      setSeasons(data);
 
-      const gamesData = await gamesRes.json();
-      const playersData = await playersRes.json();
+      const activeSeason =
+        data.find((s) => s.active) ?? data[0];
 
-      console.log("GAMES:", gamesData);
-      console.log("PLAYERS:", playersData);
+      if (activeSeason) {
+        setSelectedSeason(activeSeason.id);
+      }
+    } catch (error) {
+      console.error("LOAD SEASONS ERROR:", error);
+    }
+  }
 
-      setGames(gamesData);
-      setPlayers(playersData);
+  loadSeasons();
+}, []);
 
-      setRoster(
-        playersData.map(
-          (player: Player) => player.id
-        )
-      );
+useEffect(() => {
+  const seasonId = selectedSeason;
+  if (seasonId === null) return;
 
+  async function loadSeasonData(id: number) {
+    try {
+      const { games, players } = await loadData(id);
+
+      setGames(games);
+      setPlayers(players);
+
+      setRoster(players.map((player) => player.id));
       setRows(
-        playersData.map((player: Player) => ({
+        players.map((player) => ({
           player_id: player.id,
           player_name: player.name,
           goals: 0,
@@ -74,130 +97,65 @@ useEffect(() => {
           red_cards: 0,
         }))
       );
-    } catch (err) {
-      console.error("LOAD ERROR:", err);
+    } catch (error) {
+      console.error("LOAD SEASON DATA ERROR:", error);
     }
   }
 
-  loadData();
-}, []);
+  loadSeasonData(seasonId);
+}, [selectedSeason]);
 
 useEffect(() => {
   if (!selectedGame) return;
 
   async function loadStats() {
-  try {
-    //
-    // Load Stats
-    //
+    try {
+      const [statsRes, rosterRes] = await Promise.all([
+        fetch(`/api/stats/${selectedGame}`),
+        fetch(`/api/game-rosters/${selectedGame}`),
+      ]);
 
-    const statsRes =
-      await fetch(
-        `/api/stats/${selectedGame}`
-      );
+      const [stats, rosterData] = await Promise.all([
+        statsRes.json(),
+        rosterRes.json(),
+      ]);
 
-    const stats =
-      await statsRes.json();
-
-    //
-    // Load Roster
-    //
-
-    const rosterRes =
-      await fetch(
-        `/api/game-rosters/${selectedGame}`
-      );
-
-    const rosterData =
-      await rosterRes.json();
-
-    if (rosterData.length > 0) {
       setRoster(
-        rosterData.map(
-          (r: any) => r.player_id
-        )
+        rosterData.length > 0
+          ? rosterData.map((r: any) => r.player_id)
+          : players.map((p) => p.id)
       );
-    } else {
-      setRoster(
-        players.map(
-          (p) => p.id
-        )
-      );
-    }
 
-    setRows((currentRows) =>
-      currentRows.map((row) => {
-        const stat =
-          stats.find(
+      setRows((currentRows) =>
+        currentRows.map((row) => {
+          const stat = stats.find(
             (s: any) =>
-              Number(
-                s.player_id
-              ) ===
-              Number(
-                row.player_id
-              )
+              Number(s.player_id) === Number(row.player_id)
           );
 
-        if (!stat) {
           return {
             ...row,
-            goals: 0,
-            assists: 0,
-            defensive_stops: 0,
-            goal_saves: 0,
-            great_passes: 0,
-            hustle_plays: 0,
-            positive_attitude: 0,
-            good_sportsmanship: 0,
-            penalties: 0,
-            yellow_cards: 0,
-            red_cards: 0,
+            goals: stat?.goals ?? 0,
+            assists: stat?.assists ?? 0,
+            defensive_stops: stat?.defensive_stops ?? 0,
+            goal_saves: stat?.goal_saves ?? 0,
+            great_passes: stat?.great_passes ?? 0,
+            hustle_plays: stat?.hustle_plays ?? 0,
+            positive_attitude: stat?.positive_attitude ?? 0,
+            good_sportsmanship: stat?.good_sportsmanship ?? 0,
+            penalties: stat?.penalties ?? 0,
+            yellow_cards: stat?.yellow_cards ?? 0,
+            red_cards: stat?.red_cards ?? 0,
           };
-        }
-
-        return {
-          ...row,
-          goals:
-            stat.goals ?? 0,
-          assists:
-            stat.assists ?? 0,
-          defensive_stops:
-            stat.defensive_stops ??
-            0,
-          goal_saves:
-            stat.goal_saves ?? 0,
-          great_passes:
-            stat.great_passes ??
-            0,
-          hustle_plays:
-            stat.hustle_plays ??
-            0,
-          positive_attitude:
-            stat.positive_attitude ??
-            0,
-          good_sportsmanship:
-            stat.good_sportsmanship ??
-            0,
-          penalties:
-            stat.penalties ?? 0,
-          yellow_cards:
-            stat.yellow_cards ??
-            0,
-          red_cards:
-            stat.red_cards ?? 0,
-        };
-      })
-    );
-  } catch (err) {
-    console.error(
-      "LOAD ERROR",
-      err
-    );
+        })
+      );
+    } catch (error) {
+      console.error("LOAD STATS ERROR:", error);
+    }
   }
-}
 
   loadStats();
-}, [selectedGame]);
+}, [selectedGame, players]);
 
   function updateStat(
     playerId: number,
@@ -271,6 +229,29 @@ function toggleRoster(playerId: number) {
             </h1>
 
             <AdminDashboardButton />
+        </div>
+
+        <div className="mb-6">
+          <label className="block mb-2 font-semibold">
+            Season
+          </label>
+
+          <select
+            value={selectedSeason ?? ""}
+            onChange={(e) =>
+              setSelectedSeason(Number(e.target.value))
+            }
+            className="w-full max-w-md p-3 rounded bg-zinc-800 border border-zinc-600 text-white"
+          >
+            {seasons.map((season) => (
+              <option
+                key={season.id}
+                value={season.id}
+              >
+                {season.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="mb-8">
@@ -635,4 +616,27 @@ function StatCell({
       />
     </td>
   );
+}
+
+async function loadData(
+  selectedSeason: number
+): Promise<{ games: Game[]; players: Player[] }> {
+  const [gamesRes, playersRes] = await Promise.all([
+    fetch(`/api/admin/games?seasonId=${selectedSeason}`),
+    fetch(`/api/admin/players?seasonId=${selectedSeason}`),
+  ]);
+
+  if (!gamesRes.ok || !playersRes.ok) {
+    throw new Error("Failed to load games or players for the selected season.");
+  }
+
+  const [gamesData, playersData] = await Promise.all([
+    gamesRes.json(),
+    playersRes.json(),
+  ]);
+
+  return {
+    games: gamesData,
+    players: playersData,
+  };
 }
