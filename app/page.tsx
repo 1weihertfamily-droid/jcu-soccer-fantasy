@@ -3,14 +3,17 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { buildLeaderboard } from "@/lib/leaderboard";
 import WelcomePopup from "@/components/WelcomePopup";
+import { getActiveSeason } from "@/lib/season";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
+  const season = await getActiveSeason();
   const { data: activeGames } = await supabase
   .from("games")
   .select("*")
   .eq("active", true)
+  .eq("season_id", season.id)
   .order("display_order");
 
   const games = activeGames ?? [];
@@ -19,18 +22,27 @@ export default async function Home() {
     .from("players")
     .select("*")
     .eq("active", true)
+    .eq("season_id", season.id)
     .order("name");
 
   const { data: stats } = await supabase
     .from("player_stats")
-    .select("*");
+    .select(`
+      *,
+      games!inner(
+        id,
+        season_id
+      )
+    `)
+    .eq("games.season_id", season.id);
 
   const {
   data: rosters,
   error: rosterError,
 } = await supabase
   .from("game_rosters")
-  .select("*");
+  .select("*")
+  .eq("season_id", season.id);
 
 console.log("ROSTERS:", rosters);
 console.log("ROSTER ERROR:", rosterError);
@@ -103,6 +115,7 @@ console.log(
 const { data: votingGame } = await supabase
   .from("games")
   .select("id, name")
+  .eq("season_id", season.id)
   .eq("voting_open", true)
   .single();
 

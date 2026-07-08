@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import AdminBackButton from "@/components/AdminBackButton";
 import HomeButton from "@/components/HomeButton";
+import { getActiveSeason } from "@/lib/season";
 
 type AwardPlayer = {
   playerName: string;

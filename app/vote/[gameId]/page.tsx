@@ -2,6 +2,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import VoteForm from "@/components/VoteForm";
 import HomeButton from "@/components/HomeButton";
+import { getActiveSeason } from "@/lib/season";
 
 type Props = {
   params: Promise<{
@@ -12,18 +13,21 @@ type Props = {
 export default async function VotePage({
   params,
 }: Props) {
+  const season = await getActiveSeason();
   const { gameId } = await params;
 
   const { data: game } = await supabase
     .from("games")
     .select("*")
     .eq("id", Number(gameId))
+    .eq("season_id", season.id)
     .single();
 
   const { data: players } = await supabase
     .from("players")
     .select("id,name")
     .eq("active", true)
+    .eq("season_id", season.id)
     .order("name");
 
   return (

@@ -1,12 +1,22 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 
-// GET ALL GAMES
-export async function GET() {
-  const { data, error } = await supabaseAdmin
+// GET GAMES
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+
+  const seasonId = searchParams.get("seasonId");
+
+  let query = supabaseAdmin
     .from("games")
     .select("*")
     .order("display_order", { ascending: true });
+
+  if (seasonId) {
+    query = query.eq("season_id", Number(seasonId));
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     return NextResponse.json(
@@ -23,10 +33,11 @@ export async function POST(
   request: Request
 ) {
   const {
-  name,
-  game_date,
-  display_order,
-} = await request.json();
+    name,
+    game_date,
+    display_order,
+    season_id,
+  } = await request.json();
 
   if (!name?.trim()) {
     return NextResponse.json(
@@ -49,6 +60,7 @@ export async function POST(
           voting_open: true,
           display_order:
             display_order ?? 999,
+          season_id,
         },
       ])
       .select()
@@ -74,6 +86,7 @@ export async function PATCH(
     active,
     voting_open,
     display_order,
+    season_id,
   } = await request.json();
 
   if (!id) {
@@ -88,6 +101,7 @@ export async function PATCH(
     active?: boolean;
     voting_open?: boolean;
     display_order?: number;
+    season_id?: number | null;
   } = {};
 
   if (typeof name === "string") {
@@ -105,13 +119,17 @@ export async function PATCH(
       voting_open;
   }
 
-if (
-  typeof display_order ===
-  "number"
-) {
-  updates.display_order =
-    display_order;
-}
+  if (
+    typeof display_order ===
+    "number"
+  ) {
+    updates.display_order =
+      display_order;
+  }
+
+  if (season_id !== undefined) {
+    updates.season_id = season_id;
+  }
 
   const { data, error } =
     await supabaseAdmin

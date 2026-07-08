@@ -58,7 +58,11 @@ async function loadSeasons() {
 }
 
  async function loadGames() {
-  const res = await fetch("/api/admin/games");
+  if (selectedSeason == null) return;
+
+  const res = await fetch(
+    `/api/admin/games?seasonId=${selectedSeason}`
+  );
 
   if (!res.ok) {
     alert("Failed to load games");
@@ -97,8 +101,13 @@ function handleDragEnd(result: any) {
 
 useEffect(() => {
   loadSeasons();
-  loadGames();
 }, []);
+
+useEffect(() => {
+  if (selectedSeason) {
+    loadGames();
+  }
+}, [selectedSeason]);
 
 async function addGame() {
   if (!newGame.trim()) return;
@@ -260,14 +269,7 @@ async function clearGameStats(
   );
 }
   
-const filteredGames =
-  selectedSeason === null
-    ? games
-    : games.filter(
-        (g) =>
-          g.season_id ===
-          selectedSeason
-      );
+const filteredGames = games;
 
 return (
     <main className="min-h-screen bg-black text-white p-8">
@@ -308,37 +310,37 @@ return (
           </div>
         </div>
 
-        <div className="mb-6">
-          <label className="block mb-2 text-sm text-zinc-400">
-            Season
-          </label>
+      <div className="mb-6">
+        <label className="block mb-2 text-sm text-zinc-400">
+          Season
+        </label>
 
-          <select
-            value={selectedSeason ?? ""}
-            onChange={(e) =>
-              setSelectedSeason(
-                Number(e.target.value)
-              )
-            }
-            className="
-              bg-zinc-800
-              border border-zinc-700
-              rounded
-              p-3
-              w-full
-              max-w-sm
-            "
-          >
-            {seasons.map((season) => (
-              <option
-                key={season.id}
-                value={season.id}
-              >
-                {season.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        <select
+          value={selectedSeason ?? ""}
+          onChange={(e) =>
+            setSelectedSeason(
+              Number(e.target.value)
+            )
+          }
+          className="
+            bg-zinc-800
+            border border-zinc-700
+            rounded
+            p-3
+            w-full
+            max-w-sm
+          "
+        >
+          {seasons.map((season) => (
+            <option
+              key={season.id}
+              value={season.id}
+            >
+              {season.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
         <div className="bg-zinc-900 rounded-xl overflow-hidden">
           <table className="w-full">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { calculateFantasyPoints } from "@/lib/scoring";
 import HomeButton from "@/components/HomeButton";
+import { getActiveSeason } from "@/lib/season";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -10,12 +11,15 @@ type Props = {
 export default async function GamePage({
   params,
 }: Props) {
+  
+  const season = await getActiveSeason();
   const { id } = await params;
 
   const { data: game } = await supabase
     .from("games")
     .select("*")
     .eq("id", id)
+    .eq("season_id", season.id)
     .single();
 
   const { data: stats } = await supabase
@@ -72,6 +76,7 @@ export default async function GamePage({
     .from("players")
     .select("*")
     .eq("active", true)
+    .eq("season_id", season.id)
     .order("name");
 
   const playerMap = new Map(

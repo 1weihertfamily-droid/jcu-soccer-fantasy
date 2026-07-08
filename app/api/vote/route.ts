@@ -49,7 +49,7 @@ console.log("VOTER ID RECEIVED:", voterId);
         .select("id")
         .eq("game_id", gameId)
         .eq("voter_id", voterId)
-        .maybeSingle();
+        .single();
 
     if (existingVote) {
       return NextResponse.json(

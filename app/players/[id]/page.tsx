@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { calculateFantasyPoints } from "@/lib/scoring";
 import AdminBackButton from "@/components/AdminBackButton";
 import HomeButton from "@/components/HomeButton";
+import { getActiveSeason } from "@/lib/season";
 
 type Props = {
   params: Promise<{
@@ -13,6 +14,7 @@ type Props = {
 export default async function PlayerPage({
   params,
 }: Props) {
+  const season = await getActiveSeason();
   const { id } = await params;
 
   const playerId = Number(id);
@@ -21,6 +23,7 @@ export default async function PlayerPage({
     .from("players")
     .select("*")
     .eq("id", playerId)
+    .eq("season_id", season.id)
     .single();
 
   if (!player) {
@@ -34,15 +37,17 @@ export default async function PlayerPage({
   }
 
   const { data: stats } = await supabase
-    .from("player_stats")
-    .select(`
-      *,
-      games (
-        id,
-        name
-      )
-    `)
-    .eq("player_id", playerId);
+  .from("player_stats")
+  .select(`
+    *,
+    games!inner (
+      id,
+      name,
+      season_id
+    )
+  `)
+  .eq("player_id", playerId)
+  .eq("games.season_id", season.id);
 
   const { data: scoringRows } = await supabase
     .from("fantasy_points_values")
