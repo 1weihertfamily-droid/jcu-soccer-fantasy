@@ -10,6 +10,7 @@ import {
 
 import Link from "next/link";
 import AdminDashboardButton from "@/components/AdminDashboardButton";
+import AdminGameRow from "@/components/AdminGameRow";
 
 type Game = {
   id: number;
@@ -385,223 +386,23 @@ return (
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
-                    {filteredGames.map(
-                      (game, index) => (
-                        <Draggable
-                          key={String(game.id)}
-                          draggableId={String(
-                            game.id
-                          )}
-                          index={index}
-                        >
-                          {(provided) => (
-                            <tr
-                              ref={
-                                provided.innerRef
-                              }
-                              {...provided.draggableProps}
-                              className="border-b border-zinc-800"
-                            >
-                              <td
-                                className="p-4 cursor-grab text-zinc-400"
-                                {...provided.dragHandleProps}
-                              >
-                                ☰
-                              </td>
-
-                              <td className="p-4">
-                                <input
-                                  value={
-                                    game.name
-                                  }
-                                  onChange={(
-                                    e
-                                  ) =>
-                                    setGames(
-                                      (
-                                        current
-                                      ) =>
-                                        current.map(
-                                          (
-                                            g
-                                          ) =>
-                                            g.id ===
-                                            game.id
-                                              ? {
-                                                  ...g,
-                                                  name:
-                                                    e
-                                                      .target
-                                                      .value,
-                                                }
-                                              : g
-                                        )
-                                    )
-                                  }
-                                  className="w-full p-2 rounded bg-zinc-800 border border-zinc-700"
-                                />
-                              </td>
-
-                              <td className="p-4">
-                                <div className="flex gap-2 items-center">
-                                  <input
-                                    type="date"
-                                    value={game.game_date ?? ""}
-                                    onChange={(e) =>
-                                      setGames((current) =>
-                                        current.map((g) =>
-                                          g.id === game.id
-                                            ? {
-                                                ...g,
-                                                game_date:
-                                                  e.target.value === ""
-                                                    ? null
-                                                    : e.target.value,
-                                              }
-                                            : g
-                                        )
-                                      )
-                                    }
-                                    className="p-2 rounded bg-zinc-800 border border-zinc-700"
-                                  />
-
-                                  <button
-                                    onClick={() =>
-                                      setGames((current) =>
-                                        current.map((g) =>
-                                          g.id === game.id
-                                            ? {
-                                                ...g,
-                                                game_date: null,
-                                              }
-                                            : g
-                                        )
-                                      )
-                                    }
-                                    className="
-                                      bg-zinc-700
-                                      hover:bg-red-600
-                                      px-2 py-1
-                                      rounded
-                                    "
-                                  >
-                                    ✕
-                                  </button>
-                                </div>
-                              </td>
-
-                              <td className="text-center">
-                                <input
-                                  type="checkbox"
-                                  checked={
-                                    game.active
-                                  }
-                                  onChange={(
-                                    e
-                                  ) =>
-                                    setGames(
-                                      (
-                                        current
-                                      ) =>
-                                        current.map(
-                                          (
-                                            g
-                                          ) =>
-                                            g.id ===
-                                            game.id
-                                              ? {
-                                                  ...g,
-                                                  active:
-                                                    e
-                                                      .target
-                                                      .checked,
-                                                }
-                                              : g
-                                        )
-                                    )
-                                  }
-                                />
-                              </td>
-
-                              <td className="text-center">
-                                <input
-                                  type="checkbox"
-                                  checked={
-                                    game.voting_open
-                                  }
-                                  onChange={(
-                                    e
-                                  ) =>
-                                    setGames(
-                                      (
-                                        current
-                                      ) =>
-                                        current.map(
-                                          (
-                                            g
-                                          ) =>
-                                            g.id ===
-                                            game.id
-                                              ? {
-                                                  ...g,
-                                                  voting_open:
-                                                    e
-                                                      .target
-                                                      .checked,
-                                                }
-                                              : g
-                                        )
-                                    )
-                                  }
-                                />
-                              </td>
-
-                              <td className="text-center p-2">
-                                <button
-                                  onClick={() =>
-                                    resetVoting(
-                                      game.id
-                                    )
-                                  }
-                                  className="
-                                    bg-red-600
-                                    hover:bg-red-700
-                                    px-3 py-2
-                                    rounded
-                                    text-sm
-                                    font-semibold
-                                    w-full
-                                  "
-                                >
-                                  Reset Voting
-                                </button>
-                              </td>
-
-                              <td className="text-center p-2">
-                                <button
-                                  onClick={() =>
-                                    clearGameStats(
-                                      game.id
-                                    )
-                                  }
-                                  className="
-                                    bg-orange-600
-                                    hover:bg-orange-700
-                                    px-3 py-2
-                                    rounded
-                                    text-sm
-                                    font-semibold
-                                    w-full
-                                  "
-                                >
-                                  Clear Stats
-                                </button>
-                              </td>
-                            </tr>
-                          )}
-                        </Draggable>
-                      )
-                    )}
+                    {filteredGames.map((game, index) => (
+                      <Draggable
+                        key={String(game.id)}
+                        draggableId={String(game.id)}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <AdminGameRow
+                            game={game}
+                            provided={provided}
+                            onUpdateGame={updateGame}
+                            onResetVoting={resetVoting}
+                            onClearStats={clearGameStats}
+                          />
+                        )}
+                      </Draggable>
+                    ))}
 
                     {provided.placeholder}
                   </tbody>
