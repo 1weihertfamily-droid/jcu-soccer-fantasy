@@ -466,6 +466,36 @@ const defenseWinners =
             </Link>
           </div>
 
+          <div className="mt-8">
+              <div className="mb-4">
+                <h2 className="text-2xl font-bold">
+                  🔗 Links
+                </h2>
+                
+              </div>
+
+              <div className="bg-zinc-900 rounded-xl p-6 hover:bg-zinc-800 transition flex flex-wrap gap-4">
+                <a
+                  href="https://playmetrics.com/login"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold"
+                >
+                  Open PlayMetrics
+                </a>
+
+                <a
+                  href="https://www.jeffersoncountyunited.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold"
+                >
+                  Open JCU⚽
+                </a>
+
+              </div>
+          </div>
+
           <div className="flex justify-end mt-8">
             <Link
               href="/admin"
