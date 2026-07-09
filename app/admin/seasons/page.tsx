@@ -76,7 +76,7 @@ export default function SeasonsPage() {
             Create Season
           </h2>
 
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <input
               value={newSeason}
               onChange={(e) =>
