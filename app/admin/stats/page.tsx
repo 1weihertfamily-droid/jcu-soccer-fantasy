@@ -46,6 +46,10 @@ export default function AdminPage() {
   const [roster, setRoster] = useState<number[]>([]);
   const [rows, setRows] = useState<PlayerRow[]>([]);
 
+  const visibleRows = rows.filter((row) =>
+    roster.includes(row.player_id)
+  );
+
 useEffect(() => {
   async function loadSeasons() {
     try {
@@ -320,23 +324,28 @@ function toggleRoster(playerId: number) {
         </div>
 
         <div className="overflow-x-auto max-h-[70vh]">
-          <table className="border-collapse text-sm min-w-full">
-            <thead className="sticky top-0 z-30 bg-black">
-              <tr className="border-b border-zinc-700 bg-black">
-                <th
-                  className="
-                    sticky left-0
-                    bg-black
-                    text-left
-                    p-2
-                    z-40
-                    min-w-[120px]
-                    md:min-w-[180px]
-                    whitespace-nowrap
-                  "
-                >
-                  Player
-                </th>
+          {visibleRows.length === 0 ? (
+            <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-4 text-sm text-zinc-400">
+              Select at least one player in the roster above to start entering stats.
+            </div>
+          ) : (
+            <table className="border-collapse text-sm min-w-full">
+              <thead className="sticky top-0 z-30 bg-black">
+                <tr className="border-b border-zinc-700 bg-black">
+                  <th
+                    className="
+                      sticky left-0
+                      bg-black
+                      text-left
+                      p-2
+                      z-40
+                      min-w-[120px]
+                      md:min-w-[180px]
+                      whitespace-nowrap
+                    "
+                  >
+                    Player
+                  </th>
                 <th className="w-12 md:min-w-[90px] text-center px-2">
                   <span className="hidden md:inline">Goals</span>
                   <span className="md:hidden">G</span>
@@ -403,7 +412,7 @@ function toggleRoster(playerId: number) {
             </thead>
 
             <tbody>
-              {rows.map((row) => (
+              {visibleRows.map((row) => (
                 <tr
                   key={row.player_id}
                   className="border-b border-zinc-800"
@@ -546,7 +555,8 @@ function toggleRoster(playerId: number) {
                 </tr>
               ))}
             </tbody>
-          </table>
+            </table>
+          )}
         </div>
         <div className="mt-8 bg-zinc-900 border border-zinc-800 rounded-lg p-4">
           <h3 className="font-bold text-lg mb-3">
