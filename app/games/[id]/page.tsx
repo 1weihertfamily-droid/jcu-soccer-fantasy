@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { calculateFantasyPoints } from "@/lib/scoring";
+import {
+  saveGameAwards,
+} from "@/lib/awards";
 import HomeButton from "@/components/HomeButton";
 import { getActiveSeason } from "@/lib/season";
 
@@ -55,90 +58,11 @@ export default async function GamePage({
       (a, b) => b.fantasyPoints - a.fantasyPoints
     );
 
-   // ---------------------------
-  // Award Voting
-  // ---------------------------
+const awards = await saveGameAwards(Number(id));
 
-  const { data: ballots } = await supabase
-    .from("ballots")
-    .select("id")
-    .eq("game_id", Number(id));
-
-  const ballotIds =
-    ballots?.map((b) => b.id) ?? [];
-
-  const { data: votes } = await supabase
-    .from("ballot_votes")
-    .select("*")
-    .in("ballot_id", ballotIds);
-
-  const { data: players, error } = await supabase
-    .from("players")
-    .select("*")
-    .eq("active", true)
-    .eq("season_id", season.id)
-    .order("name");
-
-  const playerMap = new Map(
-    (players ?? []).map((player) => [
-      player.id,
-      player.name,
-    ])
-  );
-
-  function getWinners(category: string) {
-  const categoryVotes =
-    votes?.filter(
-      (vote) => vote.category === category
-    ) ?? [];
-
-  const counts = new Map<
-    number,
-    {
-      name: string;
-      votes: number;
-    }
-  >();
-
-  categoryVotes.forEach((vote: any) => {
-    const existing = counts.get(
-      vote.player_id
-    );
-
-    if (existing) {
-      existing.votes += 1;
-    } else {
-      counts.set(vote.player_id, {
-        name:
-          playerMap.get(vote.player_id) ??
-          "Unknown Player",
-        votes: 1,
-      });
-    }
-  });
-
-  const sorted = [...counts.values()].sort(
-    (a, b) => b.votes - a.votes
-  );
-
-  if (!sorted.length) return [];
-
-  const topVotes = sorted[0].votes;
-
-  return sorted.filter(
-    (player) =>
-      player.votes === topVotes
-  );
-}
-
-const goatWinners =
-  getWinners("goat");
-
-const workerWinners =
-  getWinners("hardest_worker");
-
-const defenseWinners =
-  getWinners("unstoppable_defense");
+const goatWinners = awards?.goat;
+const workerWinners = awards?.hardest_worker;
+const defenseWinners = awards?.unstoppable_defense;
 
 const displayStat = (value: number) =>
   value > 0 ? value : "";
@@ -189,7 +113,7 @@ const displayStat = (value: number) =>
     {goatWinners?.length ? (
       <>
         <div className="mt-2 font-semibold">
-          {goatWinners.map((player) => (
+          {goatWinners.map((player: { name: string; votes: number }) => (
             <div key={player.name}>
               {player.name}
             </div>
@@ -225,7 +149,7 @@ const displayStat = (value: number) =>
     {workerWinners?.length ? (
       <>
         <div className="mt-2 font-semibold">
-          {workerWinners.map((player) => (
+          {workerWinners.map((player: { name: string; votes: number }) => (
             <div key={player.name}>
               {player.name}
             </div>
@@ -261,7 +185,7 @@ const displayStat = (value: number) =>
     {defenseWinners?.length ? (
       <>
         <div className="mt-2 font-semibold">
-          {defenseWinners.map((player) => (
+          {defenseWinners.map((player: { name: string; votes: number }) => (
             <div key={player.name}>
               {player.name}
             </div>

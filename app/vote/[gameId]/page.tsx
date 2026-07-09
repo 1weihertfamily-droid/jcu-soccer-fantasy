@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import VoteForm from "@/components/VoteForm";
 import HomeButton from "@/components/HomeButton";
@@ -30,31 +29,76 @@ export default async function VotePage({
     .eq("season_id", season.id)
     .order("name");
 
+  //
+  // Award Limits
+  //
+
+  const { data: awardSettings } = await supabase
+    .from("award_settings")
+    .select("*");
+
+  const settings = Object.fromEntries(
+    (awardSettings ?? []).map((row) => [
+      row.category,
+      row.max_per_season,
+    ])
+  );
+
+  //
+  // Awards already won this season
+  //
+
+  const { data: awardWinners } = await supabase
+    .from("award_winners")
+    .select("player_id, category")
+    .eq("season_id", season.id);
+
+  const awardCounts = {
+    goat: new Map<number, number>(),
+    hardest_worker: new Map<number, number>(),
+    unstoppable_defense: new Map<number, number>(),
+  };
+
+  (awardWinners ?? []).forEach((award: any) => {
+    const map =
+      awardCounts[
+        award.category as keyof typeof awardCounts
+      ];
+
+    if (!map) return;
+
+    map.set(
+      award.player_id,
+      (map.get(award.player_id) ?? 0) + 1
+    );
+  });
+
   return (
-  <main className="min-h-screen bg-black text-white p-8">
-    <div className="max-w-5xl mx-auto">
+    <main className="min-h-screen bg-black text-white p-8">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
+          <div>
+            <h1 className="text-4xl font-bold">
+              Parent Voting
+            </h1>
 
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
-        <div>
-          <h1 className="text-4xl font-bold">
-            Parent Voting
-          </h1>
+            <h2 className="text-xl mt-2 text-zinc-400">
+              {game?.name}
+            </h2>
+          </div>
 
-          <h2 className="text-xl mt-2 text-zinc-400">
-            {game?.name}
-          </h2>
+          <div className="w-full sm:w-auto">
+            <HomeButton />
+          </div>
         </div>
 
-        <div className="w-full sm:w-auto">
-          <HomeButton />
-        </div>
+        <VoteForm
+          gameId={Number(gameId)}
+          players={players ?? []}
+          awardCounts={awardCounts}
+          awardLimits={settings}
+        />
       </div>
-
-      <VoteForm
-        gameId={Number(gameId)}
-        players={players ?? []}
-      />
-
-    </div>
-  </main>
-);}
+    </main>
+  );
+}

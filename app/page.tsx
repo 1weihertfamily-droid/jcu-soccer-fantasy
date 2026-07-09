@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { buildLeaderboard } from "@/lib/leaderboard";
 import WelcomePopup from "@/components/WelcomePopup";
 import { getActiveSeason } from "@/lib/season";
+import { calculateFantasyPoints } from "@/lib/scoring";
 
 export const dynamic = "force-dynamic";
 
@@ -394,9 +395,9 @@ const defenseWinners =
 
     <p className="text-zinc-400">
       {defenseWinners.length > 1
-        ? `🏅 Tied • ${defenseWinners[0].votes} votes each`
-        : `${defenseWinners[0].votes} vote${
-            defenseWinners[0].votes !== 1
+        ? `🏅 Tied • ${defenseWinners[0].votecount} votes each`
+        : `${defenseWinners[0].votecount} vote${
+            defenseWinners[0].votecount !== 1
               ? "s"
               : ""
           }`}

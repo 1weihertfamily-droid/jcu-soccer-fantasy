@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"; 
 import { getVoterId } from "@/lib/voter";
 
+
 type Player = {
   id: number;
   name: string;
@@ -11,11 +12,23 @@ type Player = {
 type Props = {
   gameId: number;
   players: Player[];
+
+  awardCounts: {
+    goat: Map<number, number>;
+    hardest_worker: Map<number, number>;
+    unstoppable_defense: Map<number, number>;
+  };
+
+  awardLimits: {
+    [key: string]: number;
+  };
 };
 
 export default function VoteForm({
   gameId,
   players,
+  awardCounts,
+  awardLimits,
 }: Props) {
   const [voterName, setVoterName] = useState("");
 
@@ -25,12 +38,16 @@ export default function VoteForm({
   "",
 ]);
 
+const voterId = getVoterId();
+
+console.log("VOTER ID:", voterId);
+
 const [alreadyVoted, setAlreadyVoted] =
   useState(false);
 
 useEffect(() => { 
   async function checkVote() {
-     const voterId = getVoterId();
+     
      const res = await fetch(
        `/api/vote/check?gameId=${gameId}&voterId=${voterId}` 
       ); 
@@ -53,15 +70,32 @@ const [defenseVotes, setDefenseVotes] =
 ].filter(Boolean);
 
 function getAvailablePlayers(
-  currentValue: string
+  currentValue: string,
+  category:
+    | "goat"
+    | "hardest_worker"
+    | "unstoppable_defense"
 ) {
-  return players.filter(
-    (player) =>
+  const max =
+    awardLimits[category] ?? 999;
+
+  return players.filter((player) => {
+    const alreadySelected =
       String(player.id) === currentValue ||
       !allSelections.includes(
         String(player.id)
-      )
-  );
+      );
+
+    const awardsEarned =
+      awardCounts[category].get(player.id) ??
+      0;
+
+    const eligible =
+      awardsEarned < max ||
+      String(player.id) === currentValue;
+
+    return alreadySelected && eligible;
+  });
 }
 
   const [submitted, setSubmitted] =
@@ -218,8 +252,9 @@ if (alreadyVoted) {
         </option>
 
         {getAvailablePlayers(
-    goatVotes[index]
-      ).map((player) => (
+    goatVotes[index],
+    "goat"
+).map((player) => (
           <option
             key={player.id}
             value={player.id}
@@ -259,7 +294,8 @@ if (alreadyVoted) {
         </option>
 
         {getAvailablePlayers(
-          workerVotes[index]
+          workerVotes[index],
+          "hardest_worker"
         ).map((player) => (
           <option
             key={player.id}
@@ -300,7 +336,8 @@ if (alreadyVoted) {
         </option>
 
         {getAvailablePlayers(
-            defenseVotes[index]
+            defenseVotes[index],
+            "unstoppable_defense"
           ).map((player) => (
           <option
             key={player.id}
