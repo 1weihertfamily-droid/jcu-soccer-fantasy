@@ -147,8 +147,10 @@ export async function saveGameAwards(
   ];
 
   if (rows.length) {
-    await supabase
-      .from("award_winners")
-      .insert(rows);
-  }
+  await supabase
+    .from("award_winners")
+    .insert(rows);
+}
+
+return awards;
 }

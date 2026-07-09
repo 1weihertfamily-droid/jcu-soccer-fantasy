@@ -22,7 +22,7 @@ export async function GET(request: Request) {
       .select("id")
       .eq("game_id", Number(gameId))
       .eq("voter_id", voterId)
-      .maybeSingle();
+      .single();
 
   if (error) {
     console.error(

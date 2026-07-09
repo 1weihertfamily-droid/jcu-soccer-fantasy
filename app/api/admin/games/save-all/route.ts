@@ -24,7 +24,10 @@ export async function POST(
           .from("games")
           .update({
             name: game.name,
-            game_date: game.game_date,
+            game_date:
+              game.game_date === ""
+                ? null
+                : game.game_date,
             active: game.active,
             voting_open:
               game.voting_open,

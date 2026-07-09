@@ -395,9 +395,9 @@ const defenseWinners =
 
     <p className="text-zinc-400">
       {defenseWinners.length > 1
-        ? `🏅 Tied • ${defenseWinners[0].votecount} votes each`
-        : `${defenseWinners[0].votecount} vote${
-            defenseWinners[0].votecount !== 1
+        ? `🏅 Tied • ${defenseWinners[0].votes} votes each`
+        : `${defenseWinners[0].votes} vote${
+            defenseWinners[0].votes !== 1
               ? "s"
               : ""
           }`}
@@ -491,7 +491,7 @@ const defenseWinners =
                   rel="noopener noreferrer"
                   className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-semibold"
                 >
-                  Open JCU⚽
+                  Open JCU ⚽
                 </a>
 
               </div>
