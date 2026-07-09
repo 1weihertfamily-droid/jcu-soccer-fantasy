@@ -10,8 +10,7 @@ export function calculateFantasyPoints(
     (stat.great_passes ?? 0) * (scoring["Great Pass"] ?? 0) +
     (stat.hustle_plays ?? 0) * (scoring["Hustle Play"] ?? 0) +
     (stat.positive_attitude ?? 0) * (scoring["Positive Attitude"] ?? 0) +
-    (stat.good_sportsmanship ?? 0) *
-      (scoring["Good Sportsmanship"] ?? 0) +
+    (stat.good_sportsmanship ?? 0) * (scoring["Good Sportsmanship"] ?? 0) +
     (stat.penalties ?? 0) * (scoring["Penalty"] ?? 0) +
     (stat.yellow_cards ?? 0) * (scoring["Yellow Card"] ?? 0) +
     (stat.red_cards ?? 0) * (scoring["Red Card"] ?? 0)

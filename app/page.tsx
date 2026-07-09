@@ -1,206 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import { supabase } from "@/lib/supabase";
-import { buildLeaderboard } from "@/lib/leaderboard";
 import WelcomePopup from "@/components/WelcomePopup";
-import { getActiveSeason } from "@/lib/season";
-import { calculateFantasyPoints } from "@/lib/scoring";
+import { getHomePageData } from "@/lib/homepage";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const season = await getActiveSeason();
-  const { data: activeGames } = await supabase
-  .from("games")
-  .select("*")
-  .eq("active", true)
-  .eq("season_id", season.id)
-  .order("display_order");
-
-  const games = activeGames ?? [];
-
-  const { data: players, error } = await supabase
-    .from("players")
-    .select("*")
-    .eq("active", true)
-    .eq("season_id", season.id)
-    .order("name");
-
-  const { data: stats } = await supabase
-    .from("player_stats")
-    .select(`
-      *,
-      games!inner(
-        id,
-        season_id
-      )
-    `)
-    .eq("games.season_id", season.id);
-
   const {
-  data: rosters,
-  error: rosterError,
-} = await supabase
-  .from("game_rosters")
-  .select("*")
-  .eq("season_id", season.id);
+    games,
+    leaderboardWithAverage,
+    latestGameName,
+    awardWinners,
+    playersErrorMessage,
+  } = await getHomePageData();
 
-console.log("ROSTERS:", rosters);
-console.log("ROSTER ERROR:", rosterError);
-
-  const { data: scoringRows } = await supabase
-    .from("fantasy_points_values")
-    .select("*");
-
-  const scoring = Object.fromEntries(
-    (scoringRows ?? []).map((row) => [
-      row.action,
-      Number(row.value),
-    ])
-  );
-
-  const leaderboard = buildLeaderboard(
-    players ?? [],
-    stats ?? [],
-    scoring
-  );
-
-    const playerGamesPlayed = new Map<number, number>();
-      (rosters ?? []).forEach((roster) => {
-        const playerId = Number(
-          roster.player_id
-        );
-
-        playerGamesPlayed.set(
-          playerId,
-          (playerGamesPlayed.get(playerId) ?? 0) + 1
-        );
-      });
-
-    const leaderboardWithAverage = leaderboard.map(
-      (player) => {
-        const gamesPlayed =
-          playerGamesPlayed.get(
-            Number(player.id)
-          ) ?? 0;
-
-        return {
-          ...player,
-          gamesPlayed,
-          avgPoints:
-            gamesPlayed > 0
-              ? player.points / gamesPlayed
-              : 0,
-        };
-      }
-    );
-
-    console.log(
-  leaderboardWithAverage.slice(0, 5)
-);
-
-console.log(
-  "Roster IDs",
-  rosters?.slice(0, 5)
-);
-
-console.log(
-  "Leaderboard IDs",
-  leaderboard.slice(0, 5)
-);
-
- // ---------------------------
-// Homepage Awards
-// ---------------------------
-
-const { data: votingGame } = await supabase
-  .from("games")
-  .select("id, name")
-  .eq("season_id", season.id)
-  .eq("voting_open", true)
-  .single();
-
-const latestGameId =
-  votingGame?.id ?? 0;
-
-const latestGameName =
-  votingGame?.name ?? `Game ${latestGameId}`;
-
-const { data: ballots } = await supabase
-  .from("ballots")
-  .select("id")
-  .eq("game_id", latestGameId);
-
-const ballotIds =
-  ballots?.map((b) => b.id) ?? [];
-
-const { data: votes } = await supabase
-  .from("ballot_votes")
-  .select("*")
-  .in("ballot_id", ballotIds);
-
-const playerMap = new Map(
-  (players ?? []).map((player) => [
-    player.id,
-    player.name,
-  ])
-);
-
-function getWinners(category: string) {
-  const categoryVotes =
-    votes?.filter(
-      (vote) => vote.category === category
-    ) ?? [];
-
-  const counts = new Map<
-    number,
-    {
-      name: string;
-      votes: number;
-    }
-  >();
-
-  categoryVotes.forEach((vote: any) => {
-    const existing = counts.get(
-      vote.player_id
-    );
-
-    if (existing) {
-      existing.votes += 1;
-    } else {
-      counts.set(vote.player_id, {
-        name:
-          playerMap.get(vote.player_id) ??
-          "Unknown Player",
-        votes: 1,
-      });
-    }
-  });
-
-  const winners = [...counts.values()];
-
-  const maxVotes = Math.max(
-    ...winners.map(
-      (entry) => entry.votes
-    ),
-    0
-  );
-
-  return winners.filter(
-    (entry) => entry.votes === maxVotes
-  );
-}
-
-const goatWinners =
-  getWinners("goat");
-
-const workerWinners =
-  getWinners("hardest_worker");
-
-const defenseWinners =
-  getWinners(
-    "unstoppable_defense"
-  );
+  const { goat, hardest_worker, unstoppable_defense } = awardWinners;
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -234,9 +48,9 @@ const defenseWinners =
             🏆 Current Leaderboard
           </h4>
 
-          {error && (
+          {playersErrorMessage && (
             <p className="text-red-500 mb-4">
-              Error loading players: {error.message}
+              Error loading players: {playersErrorMessage}
             </p>
           )}
 
@@ -318,10 +132,10 @@ const defenseWinners =
       🏆 GOAT
     </h3>
 
-    {goatWinners?.length ? (
+    {goat?.length ? (
   <>
     <div className="mt-2 text-xl font-semibold">
-      {goatWinners.map((player) => (
+      {goat.map((player) => (
         <div key={player.name}>
           {player.name}
         </div>
@@ -329,10 +143,10 @@ const defenseWinners =
     </div>
 
     <p className="text-zinc-400">
-      {goatWinners.length > 1
-        ? `🏅 Tied • ${goatWinners[0].votes} votes each`
-        : `${goatWinners[0].votes} vote${
-            goatWinners[0].votes !== 1
+      {goat.length > 1
+        ? `🏅 Tied • ${goat[0].votes} votes each`
+        : `${goat[0].votes} vote${
+            goat[0].votes !== 1
               ? "s"
               : ""
           }`}
@@ -350,10 +164,10 @@ const defenseWinners =
       🔥 Hardest Worker
     </h3>
 
-    {workerWinners?.length ? (
+    {hardest_worker?.length ? (
   <>
     <div className="mt-2 text-xl font-semibold">
-      {workerWinners.map((player) => (
+      {hardest_worker.map((player) => (
         <div key={player.name}>
           {player.name}
         </div>
@@ -361,11 +175,11 @@ const defenseWinners =
     </div>
 
     <p className="text-zinc-400">
-      {workerWinners.length > 1
-        ? `🏅 Tied • ${workerWinners[0].votes} votes each`
-        : `${workerWinners[0].votes} vote${
+      {hardest_worker.length > 1
+        ? `🏅 Tied • ${hardest_worker[0].votes} votes each`
+        : `${hardest_worker[0].votes} vote${
 
-            workerWinners[0].votes !== 1
+            hardest_worker[0].votes !== 1
               ? "s"
               : ""
           }`}
@@ -383,10 +197,10 @@ const defenseWinners =
       🛡️ Unstoppable Defense
     </h3>
 
-    {defenseWinners?.length ? (
+    {unstoppable_defense?.length ? (
   <>
     <div className="mt-2 text-xl font-semibold">
-      {defenseWinners.map((player) => (
+      {unstoppable_defense.map((player) => (
         <div key={player.name}>
           {player.name}
         </div>
@@ -394,10 +208,10 @@ const defenseWinners =
     </div>
 
     <p className="text-zinc-400">
-      {defenseWinners.length > 1
-        ? `🏅 Tied • ${defenseWinners[0].votes} votes each`
-        : `${defenseWinners[0].votes} vote${
-            defenseWinners[0].votes !== 1
+      {unstoppable_defense.length > 1
+        ? `🏅 Tied • ${unstoppable_defense[0].votes} votes each`
+        : `${unstoppable_defense[0].votes} vote${
+            unstoppable_defense[0].votes !== 1
               ? "s"
               : ""
           }`}
