@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import AdminBackButton from "@/components/AdminBackButton";
+import AwardResultsCard from "@/components/AwardResultsCard";
+import AwardsFilters from "@/components/AwardsFilters";
 import HomeButton from "@/components/HomeButton";
-import { getActiveSeason } from "@/lib/season";
 
 type AwardPlayer = {
   playerName: string;
@@ -171,203 +172,28 @@ const filteredGames = useMemo(() => {
           🗳️ Vote For Player Awards
         </Link>
 
-        {/* Filters */}
-
-        <div className="bg-zinc-900 rounded-xl p-5 mb-8">
-          <div className="grid md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm text-zinc-400 mb-2">
-                Game
-              </label>
-
-              <select
-                value={selectedGame}
-                onChange={(e) =>
-                  setSelectedGame(
-                    e.target.value
-                  )
-                }
-                className="w-full bg-zinc-800 border border-zinc-700 rounded p-3"
-              >
-                <option value="all">
-                  All Games
-                </option>
-
-                {games.map((game) => (
-                  <option
-                    key={game.gameId}
-                    value={String(game.gameId)}
-                  >
-                    Game {game.gameId}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm text-zinc-400 mb-2">
-                Player
-              </label>
-
-              <select
-                value={selectedPlayer}
-                onChange={(e) =>
-                  setSelectedPlayer(
-                    e.target.value
-                  )
-                }
-                className="w-full bg-zinc-800 border border-zinc-700 rounded p-3"
-              >
-                <option value="all">
-                  All Players
-                </option>
-
-                {players.map((player) => (
-                  <option
-                    key={player.id}
-                    value={player.id}
-                  >
-                    {player.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm text-zinc-400 mb-2">
-                Category
-              </label>
-
-              <select
-                value={selectedCategory}
-                onChange={(e) =>
-                  setSelectedCategory(
-                    e.target.value
-                  )
-                }
-                className="w-full bg-zinc-800 border border-zinc-700 rounded p-3"
-              >
-                <option value="all">
-                  All Categories
-                </option>
-
-                <option value="goat">
-                  GOAT
-                </option>
-
-                <option value="worker">
-                  Hardest Worker
-                </option>
-
-                <option value="defense">
-                  Unstoppable Defense
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
+        <AwardsFilters
+          games={games}
+          players={players}
+          selectedGame={selectedGame}
+          selectedPlayer={selectedPlayer}
+          selectedCategory={selectedCategory}
+          onGameChange={setSelectedGame}
+          onPlayerChange={setSelectedPlayer}
+          onCategoryChange={setSelectedCategory}
+        />
 
         {filteredGames.map((game) => (
-          <div
+          <AwardResultsCard
             key={game.gameId}
-            className="mb-10 bg-zinc-900 rounded-xl overflow-hidden"
-          >
-            <div className="bg-zinc-800 px-6 py-4">
-              <h2 className="text-2xl font-bold">
-                Game {game.gameId}
-              </h2>
-            </div>
-
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-zinc-700">
-                  <th className="text-left p-4">
-                    Rank
-                  </th>
-
-                  {(selectedCategory ===
-                    "all" ||
-                    selectedCategory ===
-                      "goat") && (
-                    <th className="text-left p-4">
-                      🏆 GOAT
-                    </th>
-                  )}
-
-                  {(selectedCategory ===
-                    "all" ||
-                    selectedCategory ===
-                      "worker") && (
-                    <th className="text-left p-4">
-                      🔥 Hardest Worker
-                    </th>
-                  )}
-
-                  {(selectedCategory ===
-                    "all" ||
-                    selectedCategory ===
-                      "defense") && (
-                    <th className="text-left p-4">
-                      🛡️ Defense
-                    </th>
-                  )}
-                </tr>
-              </thead>
-
-              <tbody>
-                {[0, 1, 2, 3, 4].map(
-                  (index) => (
-                    <tr
-                      key={index}
-                      className="border-b border-zinc-800"
-                    >
-                      <td className="p-4 font-bold">
-                        #{index + 1}
-                      </td>
-
-                      {(selectedCategory ===
-                        "all" ||
-                        selectedCategory ===
-                          "goat") && (
-                        <td className="p-4">
-                          {renderPlayer(
-                            game.goat[index]
-                          )}
-                        </td>
-                      )}
-
-                      {(selectedCategory ===
-                        "all" ||
-                        selectedCategory ===
-                          "worker") && (
-                        <td className="p-4">
-                          {renderPlayer(
-                            game
-                              .hardestWorker[
-                              index
-                            ]
-                          )}
-                        </td>
-                      )}
-
-                      {(selectedCategory ===
-                        "all" ||
-                        selectedCategory ===
-                          "defense") && (
-                        <td className="p-4">
-                          {renderPlayer(
-                            game.defense[
-                              index
-                            ]
-                          )}
-                        </td>
-                      )}
-                    </tr>
-                  )
-                )}
-              </tbody>
-            </table>
-          </div>
+            gameId={game.gameId}
+            goat={game.goat}
+            hardestWorker={game.hardestWorker}
+            defense={game.defense}
+            selectedCategory={selectedCategory}
+            selectedPlayer={selectedPlayer}
+            renderPlayer={renderPlayer}
+          />
         ))}
 
         <div className="w-full sm:w-auto">
