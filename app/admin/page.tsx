@@ -52,7 +52,13 @@ export default function AdminDashboard() {
       href: "/awards",
       emoji: "🏆",
     },
-
+    {
+      title: "Admin Vote Tester",
+      description:
+        "Submit test ballots and override votes.",
+      href: "/admin/vote",
+      emoji: "🧪",
+    },
   ];
 
   return (

@@ -10,6 +10,7 @@ export async function POST(req: Request) {
       goatVotes,
       hardestWorkerVotes,
       unstoppableDefenseVotes,
+      forceOverride,
     } = await req.json();
 
     const allSelections = [
@@ -46,14 +47,53 @@ export async function POST(req: Request) {
     }
 
     if (existingVotes && existingVotes.length > 0) {
-      return NextResponse.json(
-        {
-          error: "You have already voted for this game.",
-        },
-        { status: 400 }
-      );
-    }
+      if (forceOverride) {
+        const ballotIds = existingVotes.map(
+          (ballot: any) => ballot.id
+        );
 
+        const { error: deleteVoteError } =
+          await supabaseAdmin
+            .from("ballot_votes")
+            .delete()
+            .in("ballot_id", ballotIds);
+
+        if (deleteVoteError) {
+          console.error(deleteVoteError);
+          return NextResponse.json(
+            {
+              error:
+                "Failed to remove existing ballot votes.",
+            },
+            { status: 500 }
+          );
+        }
+
+        const { error: deleteBallotError } =
+          await supabaseAdmin
+            .from("ballots")
+            .delete()
+            .in("id", ballotIds);
+
+        if (deleteBallotError) {
+          console.error(deleteBallotError);
+          return NextResponse.json(
+            {
+              error:
+                "Failed to remove existing ballots.",
+            },
+            { status: 500 }
+          );
+        }
+      } else {
+        return NextResponse.json(
+          {
+            error: "You have already voted for this game.",
+          },
+          { status: 400 }
+        );
+      }
+    }
 
     const {
       data: ballot,
