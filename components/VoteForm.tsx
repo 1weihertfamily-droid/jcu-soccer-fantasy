@@ -51,15 +51,23 @@ export default function VoteForm({
   ]);
   const [alreadyVoted, setAlreadyVoted] =
     useState(false);
+  const [voteLoaded, setVoteLoaded] =
+    useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [overrideExisting, setOverrideExisting] =
     useState(false);
 
   const voterId = getVoterId();
 
+  const normalizeVotes = (votes: any[]) =>
+    Array.from({ length: 3 }, (_, index) =>
+      String(votes?.[index] ?? "")
+    );
+
   useEffect(() => {
     if (adminMode) {
       setAlreadyVoted(false);
+      setVoteLoaded(true);
       return;
     }
 
@@ -68,7 +76,16 @@ export default function VoteForm({
         `/api/vote/check?gameId=${gameId}&voterId=${voterId}`
       );
       const data = await res.json();
-      setAlreadyVoted(data.alreadyVoted);
+
+      if (data.alreadyVoted) {
+        setAlreadyVoted(true);
+        setVoterName(data.voterName || "");
+        setGoatVotes(normalizeVotes(data.goatVotes || []));
+        setWorkerVotes(normalizeVotes(data.hardestWorkerVotes || []));
+        setDefenseVotes(normalizeVotes(data.unstoppableDefenseVotes || []));
+      }
+
+      setVoteLoaded(true);
     }
 
     checkVote();
@@ -158,7 +175,10 @@ export default function VoteForm({
         gameId,
         voterId: voterIdToUse,
         voterName,
-        forceOverride: adminMode && overrideExisting,
+        forceOverride:
+          adminMode
+            ? overrideExisting
+            : alreadyVoted,
         goatVotes: goatVotes.map(Number),
         hardestWorkerVotes: workerVotes.map(Number),
         unstoppableDefenseVotes: defenseVotes.map(Number),
@@ -188,14 +208,11 @@ export default function VoteForm({
     );
   }
 
-  if (alreadyVoted) {
+  if (!voteLoaded) {
     return (
       <div className="bg-zinc-900 rounded-xl p-8 text-center">
-        <h2 className="text-3xl font-bold mb-4">
-          🗳️ Vote Already Submitted
-        </h2>
-        <p className="text-zinc-300">
-          This device has already voted for this game.
+        <p className="text-zinc-400">
+          Loading your ballot...
         </p>
       </div>
     );
@@ -203,6 +220,16 @@ export default function VoteForm({
 
   return (
     <div className="max-w-xl space-y-6">
+      {alreadyVoted && !adminMode && (
+        <div className="bg-amber-900/10 border border-amber-700 rounded-xl p-4">
+          <h2 className="text-xl font-semibold text-amber-200">
+            You already voted for this game.
+          </h2>
+          <p className="mt-2 text-zinc-300">
+            Your previous selections are preloaded below. Change any pick and submit again to update your ballot.
+          </p>
+        </div>
+      )}
       {adminMode && (
         <div className="bg-zinc-900 rounded-xl p-4 border border-zinc-700">
           <h2 className="text-lg font-semibold mb-3">
