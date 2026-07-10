@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { calculateFantasyPoints } from "@/lib/scoring";
+import { getPlayerAwardVoteCounts } from "@/lib/awards";
 import AdminBackButton from "@/components/AdminBackButton";
 import HomeButton from "@/components/HomeButton";
 import { getActiveSeason } from "@/lib/season";
@@ -105,29 +106,11 @@ export default async function PlayerPage({
       );
   });
 
-  const { data: awardVotes } = await supabase
-    .from("ballot_votes")
-    .select("category")
-    .eq("player_id", playerId);
-
-  const goatAwards =
-    awardVotes?.filter(
-      (v) => v.category === "goat"
-    ).length ?? 0;
-
-  const workerAwards =
-    awardVotes?.filter(
-      (v) =>
-        v.category ===
-        "hardest_worker"
-    ).length ?? 0;
-
-  const defenseAwards =
-    awardVotes?.filter(
-      (v) =>
-        v.category ===
-        "unstoppable_defense"
-    ).length ?? 0;
+  const {
+    goat: goatAwards,
+    hardest_worker: workerAwards,
+    unstoppable_defense: defenseAwards,
+  } = await getPlayerAwardVoteCounts(playerId);
 
   return (
     <main className="min-h-screen bg-black text-white p-8">

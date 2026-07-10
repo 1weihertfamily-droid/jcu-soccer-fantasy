@@ -40,8 +40,6 @@ export default function VoteForm({
 
 const voterId = getVoterId();
 
-console.log("VOTER ID:", voterId);
-
 const [alreadyVoted, setAlreadyVoted] =
   useState(false);
 
@@ -113,12 +111,7 @@ function hasDuplicates(
 }
 
   async function handleSubmit() {
-    console.log({
-  goatVotes,
-  workerVotes,
-  defenseVotes,
-});
-if (!voterName.trim()) {
+    if (!voterName.trim()) {
       alert("Please enter your name.");
       return;
     }

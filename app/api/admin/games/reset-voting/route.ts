@@ -31,9 +31,6 @@ export async function POST(request: Request) {
     const ballotIds =
       ballots?.map((b) => b.id) ?? [];
 
-    console.log(
-      `Found ${ballotIds.length} ballots for game ${gameId}`
-    );
 
     // Delete votes first
     if (ballotIds.length > 0) {
@@ -54,9 +51,6 @@ export async function POST(request: Request) {
         );
       }
 
-      console.log(
-        `Deleted ${voteCount ?? 0} votes`
-      );
     }
 
     // Delete ballots
@@ -77,9 +71,6 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log(
-      `Deleted ${ballotCount ?? 0} ballots`
-    );
 
     return NextResponse.json({
       success: true,

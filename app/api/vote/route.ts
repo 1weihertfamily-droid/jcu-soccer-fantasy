@@ -12,15 +12,6 @@ export async function POST(req: Request) {
       unstoppableDefenseVotes,
     } = await req.json();
 
-    console.log("VOTE REQUEST:", {
-      gameId,
-      voterId,
-      voterName,
-      goatVotes,
-      hardestWorkerVotes,
-      unstoppableDefenseVotes,
-    });
-console.log("VOTER ID RECEIVED:", voterId);
     const allSelections = [
       ...goatVotes,
       ...hardestWorkerVotes,
@@ -43,29 +34,26 @@ console.log("VOTER ID RECEIVED:", voterId);
       );
     }
 
-    const { data: existingVote } =
+    const { data: existingVotes, error: existingVoteError } =
       await supabaseAdmin
         .from("ballots")
         .select("id")
         .eq("game_id", gameId)
-        .eq("voter_id", voterId)
-        .single();
+        .eq("voter_id", voterId);
 
-    if (existingVote) {
+    if (existingVoteError) {
+      console.error(existingVoteError);
+    }
+
+    if (existingVotes && existingVotes.length > 0) {
       return NextResponse.json(
         {
-          error:
-            "You have already voted for this game.",
+          error: "You have already voted for this game.",
         },
         { status: 400 }
       );
     }
 
-console.log({
-  game_id: gameId,
-  voter_id: voterId,
-  voter_name: voterName,
-});
 
     const {
       data: ballot,
@@ -81,7 +69,7 @@ console.log({
       .single();
 
     if (ballotError) {
-      console.log(
+      console.error(
         "BALLOT ERROR:",
         ballotError
       );
@@ -123,13 +111,14 @@ console.log({
       ),
     ];
 
+
     const { error: voteError } =
       await supabaseAdmin
         .from("ballot_votes")
         .insert(votes);
 
     if (voteError) {
-      console.log(
+      console.error(
         "VOTE ERROR:",
         voteError
       );

@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import WelcomePopup from "@/components/WelcomePopup";
 import { getHomePageData } from "@/lib/homepage";
+import { getLatestAwards } from "@/lib/awards";
 
 export const dynamic = "force-dynamic";
 
@@ -9,12 +10,15 @@ export default async function Home() {
   const {
     games,
     leaderboardWithAverage,
-    latestGameName,
-    awardWinners,
     playersErrorMessage,
   } = await getHomePageData();
 
-  const { goat, hardest_worker, unstoppable_defense } = awardWinners;
+  const {
+    latestGameName,
+    goat,
+    hardest_worker,
+    unstoppable_defense,
+  } = await getLatestAwards();
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -121,7 +125,7 @@ export default async function Home() {
     </p>
 
      <p className="text-zinc-400 mt-4 font-bold">
-      {latestGameName} ~ Voting Results
+      {latestGameName ?? "Latest Game"} ~ Voting Results
     </p>
 
   </div>

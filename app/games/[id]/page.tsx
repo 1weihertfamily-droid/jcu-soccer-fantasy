@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { calculateFantasyPoints } from "@/lib/scoring";
-import {
-  saveGameAwards,
-} from "@/lib/awards";
+import { getWinningGameAwards } from "@/lib/awards";
 import HomeButton from "@/components/HomeButton";
 import { getActiveSeason } from "@/lib/season";
 
@@ -58,11 +56,11 @@ export default async function GamePage({
       (a, b) => b.fantasyPoints - a.fantasyPoints
     );
 
-const awards = await saveGameAwards(Number(id));
+const awards = await getWinningGameAwards(Number(id));
 
-const goatWinners = awards?.goat;
-const workerWinners = awards?.hardest_worker;
-const defenseWinners = awards?.unstoppable_defense;
+const goatWinners = awards.goat;
+const workerWinners = awards.hardest_worker;
+const defenseWinners = awards.unstoppable_defense;
 
 const displayStat = (value: number) =>
   value > 0 ? value : "";
