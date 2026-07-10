@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import VoteForm from "@/components/VoteForm";
+import AdminVoteList from "@/components/AdminVoteList";
 
 type Game = {
   id: number;
@@ -84,6 +85,13 @@ export default function AdminVoteTester({
           awardCounts={awardCounts}
           awardLimits={awardLimits}
           adminMode
+        />
+      </div>
+
+      <div className="bg-zinc-900 rounded-xl p-6">
+        <AdminVoteList
+          gameId={selectedGame.id}
+          players={players}
         />
       </div>
     </div>
