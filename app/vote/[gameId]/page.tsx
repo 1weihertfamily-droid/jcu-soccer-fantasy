@@ -29,6 +29,19 @@ export default async function VotePage({
     .eq("season_id", season.id)
     .order("name");
 
+  const { data: rosterEntries } = await supabase
+    .from("game_rosters")
+    .select("player_id")
+    .eq("game_id", Number(gameId));
+
+  const presentPlayerIds = new Set(
+    (rosterEntries ?? []).map((row: any) => row.player_id)
+  );
+
+  const presentPlayers = (players ?? []).filter((player: any) =>
+    presentPlayerIds.has(player.id)
+  );
+
   //
   // Award Limits
   //
@@ -94,7 +107,7 @@ export default async function VotePage({
 
         <VoteForm
           gameId={Number(gameId)}
-          players={players ?? []}
+          players={presentPlayers}
           awardCounts={awardCounts}
           awardLimits={settings}
         />
