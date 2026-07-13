@@ -13,6 +13,10 @@ export default async function Home() {
     playersErrorMessage,
   } = await getHomePageData();
 
+  const sortedLeaderboard = [...leaderboardWithAverage].sort(
+    (a, b) => a.name.localeCompare(b.name)
+  );
+
   const {
     latestGameName,
     goat,
@@ -49,7 +53,7 @@ export default async function Home() {
 
         <div className="bg-zinc-900 rounded-xl p-6 shadow-lg">
           <h4 className="text-2xl font-bold mb-4">
-            🏆 Current Leaderboard
+            🏆 Team Fantasy Stats
           </h4>
 
           {playersErrorMessage && (
@@ -61,7 +65,6 @@ export default async function Home() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-zinc-700">
-                <th className="text-left py-3">Rank</th>
                 <th className="text-left py-3">Player</th>
                 <th className="text-right py-3">
                   Points
@@ -78,16 +81,11 @@ export default async function Home() {
             </thead>
 
             <tbody>
-              {leaderboardWithAverage.map(
-               (player, index) => (
+              {sortedLeaderboard.map((player) => (
                 <tr
                   key={player.id}
                   className="border-b border-zinc-800"
                 >
-                  <td className="py-3">
-                    {index + 1}
-                  </td>
-
                   <td className="py-3">
                     <Link
                       href={`/players/${player.id}`}
@@ -322,6 +320,12 @@ export default async function Home() {
             >
               Admin
             </Link>
+          </div>
+
+          <div className="mt-8 rounded-xl border border-zinc-700 bg-zinc-950 p-4 text-sm text-zinc-400">
+            <p>
+              The Fantasy App is an independent parent-engagement tool created for our team and is not affiliated with, endorsed by, or officially supported by Jefferson County United Soccer Club (JCU); all rights are reserved, and any use, reproduction, distribution, or modification of the app or its content requires the prior written permission of the app's creator. The app is intended for personal use only and should not be used for commercial purposes or any other unauthorized activities. By using the app, you agree to comply with all applicable laws and regulations and to respect the intellectual property rights of others.
+            </p>
           </div>
         </div>
       </div>
