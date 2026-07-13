@@ -26,7 +26,6 @@ export async function getHomePageData(): Promise<HomePageData> {
     { data: activeGames },
     { data: players, error: playersError },
     { data: stats },
-    { data: rosters },
     { data: scoringRows },
   ] = await Promise.all([
     supabase
@@ -54,13 +53,16 @@ export async function getHomePageData(): Promise<HomePageData> {
       `)
       .eq("games.season_id", season.id),
 
-    supabase
-      .from("game_rosters")
-      .select("*")
-      .eq("season_id", season.id),
-
     supabase.from("fantasy_points_values").select("*"),
   ]);
+
+  const { data: rosters } = await supabase
+    .from("game_rosters")
+    .select("*")
+    .in(
+      "game_id",
+      (activeGames ?? []).map((game: any) => game.id)
+    );
 
   const { data: votingGame } = await supabase
     .from("games")

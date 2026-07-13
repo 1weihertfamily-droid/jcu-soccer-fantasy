@@ -11,22 +11,32 @@ export async function POST(request: Request) {
       roster,
     } = body;
 
-    const rowsToSave = rows.map((row: any) => ({
-      game_id: Number(game_id),
-      player_id: row.player_id,
+    const rosterSet = new Set(
+      Array.isArray(roster)
+        ? roster.map((id: any) => Number(id))
+        : []
+    );
 
-      goals: row.goals,
-      assists: row.assists,
-      defensive_stops: row.defensive_stops,
-      goal_saves: row.goal_saves,
-      great_passes: row.great_passes,
-      hustle_plays: row.hustle_plays,
-      positive_attitude: row.positive_attitude,
-      good_sportsmanship: row.good_sportsmanship,
-      penalties: row.penalties,
-      yellow_cards: row.yellow_cards,
-      red_cards: row.red_cards,
-    }));
+    const rowsToSave = rows
+      .filter((row: any) =>
+        rosterSet.has(Number(row.player_id))
+      )
+      .map((row: any) => ({
+        game_id: Number(game_id),
+        player_id: row.player_id,
+
+        goals: row.goals,
+        assists: row.assists,
+        defensive_stops: row.defensive_stops,
+        goal_saves: row.goal_saves,
+        great_passes: row.great_passes,
+        hustle_plays: row.hustle_plays,
+        positive_attitude: row.positive_attitude,
+        good_sportsmanship: row.good_sportsmanship,
+        penalties: row.penalties,
+        yellow_cards: row.yellow_cards,
+        red_cards: row.red_cards,
+      }));
 
     const { error: statsError } =
       await supabaseAdmin
@@ -35,6 +45,43 @@ export async function POST(request: Request) {
           onConflict:
             "game_id,player_id",
         });
+
+    if (statsError) {
+      console.error(statsError);
+
+      return NextResponse.json(
+        { error: statsError.message },
+        { status: 500 }
+      );
+    }
+
+    if (Array.isArray(roster)) {
+      const uncheckedPlayerIds = rows
+        .map((row: any) => Number(row.player_id))
+        .filter(
+          (playerId) => !rosterSet.has(playerId)
+        );
+
+      if (uncheckedPlayerIds.length > 0) {
+        const { error: deleteStatsError } =
+          await supabaseAdmin
+            .from("player_stats")
+            .delete()
+            .eq("game_id", Number(game_id))
+            .in("player_id", uncheckedPlayerIds);
+
+        if (deleteStatsError) {
+          console.error(deleteStatsError);
+          return NextResponse.json(
+            {
+              error:
+                deleteStatsError.message,
+            },
+            { status: 500 }
+          );
+        }
+      }
+    }
 
     if (statsError) {
       console.error(statsError);
