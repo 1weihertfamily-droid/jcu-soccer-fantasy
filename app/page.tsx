@@ -313,6 +313,14 @@ export default async function Home() {
               </div>
           </div>
 
+          
+
+          <div className="mt-8 rounded-xl border border-zinc-700 bg-zinc-950 p-4 text-sm text-zinc-400">
+            <p>
+              The Fantasy App is an independent parent-engagement tool created for our team and is not affiliated with, endorsed by, or officially supported by Jefferson County United Soccer Club (JCU); all rights are reserved, and any use, reproduction, distribution, or modification of the app or its content requires the prior written permission of the app's creator. The app is intended for personal use only and should not be used for commercial purposes or any other unauthorized activities. By using the app, you agree to comply with all applicable laws and regulations and to respect the intellectual property rights of others.
+            </p>
+          </div>
+
           <div className="flex justify-end mt-8">
             <Link
               href="/admin"
@@ -320,12 +328,6 @@ export default async function Home() {
             >
               Admin
             </Link>
-          </div>
-
-          <div className="mt-8 rounded-xl border border-zinc-700 bg-zinc-950 p-4 text-sm text-zinc-400">
-            <p>
-              The Fantasy App is an independent parent-engagement tool created for our team and is not affiliated with, endorsed by, or officially supported by Jefferson County United Soccer Club (JCU); all rights are reserved, and any use, reproduction, distribution, or modification of the app or its content requires the prior written permission of the app's creator. The app is intended for personal use only and should not be used for commercial purposes or any other unauthorized activities. By using the app, you agree to comply with all applicable laws and regulations and to respect the intellectual property rights of others.
-            </p>
           </div>
         </div>
       </div>
