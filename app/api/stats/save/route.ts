@@ -59,7 +59,7 @@ export async function POST(request: Request) {
       const uncheckedPlayerIds = rows
         .map((row: any) => Number(row.player_id))
         .filter(
-          (playerId) => !rosterSet.has(playerId)
+          (playerId: number) => !rosterSet.has(playerId)
         );
 
       if (uncheckedPlayerIds.length > 0) {
@@ -81,15 +81,6 @@ export async function POST(request: Request) {
           );
         }
       }
-    }
-
-    if (statsError) {
-      console.error(statsError);
-
-      return NextResponse.json(
-        { error: statsError.message },
-        { status: 500 }
-      );
     }
 
     // ---------------------------------
