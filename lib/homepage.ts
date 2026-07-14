@@ -11,6 +11,7 @@ export type HomePageData = {
   games: any[];
   leaderboardWithAverage: any[];
   latestGameName: string;
+  totalGamesWithStats?: number;
   awardWinners: {
     goat: HomePageAwardWinner[];
     hardest_worker: HomePageAwardWinner[];
@@ -96,13 +97,20 @@ export async function getHomePageData(): Promise<HomePageData> {
 
   const leaderboard = buildLeaderboard(players ?? [], stats ?? [], scoring);
 
+  // Count games played based on saved stats (distinct game_id per player).
+  const playerGamesPlayedSets = new Map<number, Set<number>>();
+  (stats ?? []).forEach((stat: any) => {
+    const playerId = Number(stat.player_id);
+    const gameId = Number(stat.game_id ?? stat.games?.id ?? stat.game_id);
+    if (!playerGamesPlayedSets.has(playerId)) {
+      playerGamesPlayedSets.set(playerId, new Set());
+    }
+    playerGamesPlayedSets.get(playerId)!.add(gameId);
+  });
+
   const playerGamesPlayed = new Map<number, number>();
-  (rosters ?? []).forEach((roster: any) => {
-    const playerId = Number(roster.player_id);
-    playerGamesPlayed.set(
-      playerId,
-      (playerGamesPlayed.get(playerId) ?? 0) + 1
-    );
+  playerGamesPlayedSets.forEach((set, playerId) => {
+    playerGamesPlayed.set(playerId, set.size);
   });
 
   const leaderboardWithAverage = leaderboard.map((player: any) => {
@@ -145,6 +153,7 @@ export async function getHomePageData(): Promise<HomePageData> {
   return {
     games,
     leaderboardWithAverage,
+    totalGamesWithStats: new Set((stats ?? []).map((s: any) => Number(s.game_id ?? s.games?.id ?? s.game_id))).size,
     latestGameName,
     awardWinners: {
       goat: getWinners("goat"),

@@ -11,11 +11,23 @@ export default async function Home() {
     games,
     leaderboardWithAverage,
     playersErrorMessage,
+    totalGamesWithStats,
   } = await getHomePageData();
 
   const sortedLeaderboard = [...leaderboardWithAverage].sort(
     (a, b) => a.name.localeCompare(b.name)
   );
+    const totalPoints = sortedLeaderboard.reduce(
+      (sum, p) => sum + (Number(p.points) || 0),
+      0
+    );
+
+    const totalGamesPlayed = totalGamesWithStats ?? sortedLeaderboard.reduce(
+      (sum, p) => sum + (Number(p.gamesPlayed) || 0),
+      0
+    );
+
+    const avgPerGame = totalGamesPlayed > 0 ? totalPoints / totalGamesPlayed : 0;
 
   const {
     latestGameName,
@@ -55,6 +67,35 @@ export default async function Home() {
           <h4 className="text-2xl font-bold mb-4">
             🏆 Team Fantasy Stats
           </h4>
+
+          <div className="mb-4">
+            {/* Desktop: align numeric totals above the right-side table columns */}
+            <div className="hidden md:grid grid-cols-[1fr_auto_auto_auto] gap-20 items-baseline">
+              <div />
+
+              <div className="text-py-3 text-zinc-400 text-right">
+                <div className="text-center white font-semibold center">{totalPoints}</div>
+                <div className="text-py-3 text-zinc-400">Points</div>
+              </div>
+
+              <div className="text-py-3 text-zinc-400 text-right">
+                <div className="text-center white font-semibold">{totalGamesPlayed}</div>
+                <div className="text-py-3 text-zinc-400">Games</div>
+              </div>
+
+              <div className="text-py-3 text-zinc-400 text-right">
+                <div className="text-right white font-semibold">{avgPerGame.toFixed(2)}</div>
+                <div className="text-py-3 text-zinc-400">Avg / Game</div>
+              </div>
+            </div>
+
+            {/* Mobile: stacked labels */}
+            <div className="flex flex-wrap gap-6 items-baseline md:hidden">
+              <div className="text-sm text-zinc-400">Total Points: <span className="text-white font-semibold">{totalPoints}</span></div>
+              <div className="text-sm text-zinc-400">Total Games: <span className="text-white font-semibold">{totalGamesPlayed}</span></div>
+              <div className="text-sm text-zinc-400">Avg / Game: <span className="text-white font-semibold">{avgPerGame.toFixed(2)}</span></div>
+            </div>
+          </div>
 
           {playersErrorMessage && (
             <p className="text-red-500 mb-4">
