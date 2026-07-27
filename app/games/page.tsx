@@ -15,6 +15,7 @@ type Game = {
   name: string;
   game_date: string | null;
   voting_open: boolean;
+  game_complete: boolean;
 };
 
 export default function GamesPage() {

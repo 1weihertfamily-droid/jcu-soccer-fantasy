@@ -33,6 +33,7 @@ export async function getHomePageData(): Promise<HomePageData> {
       .from("games")
       .select("*")
       .eq("active", true)
+      .eq("game_complete", false)
       .eq("season_id", season.id)
       .order("display_order"),
 

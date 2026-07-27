@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { saveGameAwards } from "@/lib/awards";
 
 // GET GAMES
 export async function GET(request: Request) {
@@ -58,6 +59,7 @@ export async function POST(
               : game_date,
           active: true,
           voting_open: true,
+          game_complete: false,
           display_order:
             display_order ?? 999,
           season_id,
@@ -85,6 +87,7 @@ export async function PATCH(
     name,
     active,
     voting_open,
+    game_complete,
     display_order,
     season_id,
   } = await request.json();
@@ -100,6 +103,7 @@ export async function PATCH(
     name?: string;
     active?: boolean;
     voting_open?: boolean;
+    game_complete?: boolean;
     display_order?: number;
     season_id?: number | null;
   } = {};
@@ -117,6 +121,17 @@ export async function PATCH(
   ) {
     updates.voting_open =
       voting_open;
+  }
+
+  if (
+    typeof game_complete === "boolean"
+  ) {
+    updates.game_complete =
+      game_complete;
+
+    if (game_complete) {
+      updates.voting_open = false;
+    }
   }
 
   if (
@@ -144,6 +159,33 @@ export async function PATCH(
       { error: error.message },
       { status: 500 }
     );
+  }
+
+  if (
+    typeof game_complete === "boolean" &&
+    game_complete === true
+  ) {
+    //await saveGameAwards(id);
+    try {
+  console.log("Calling saveGameAwards");
+
+  const awards = await saveGameAwards(id);
+
+  console.log("Awards returned:", awards);
+} catch (err) {
+  console.error("saveGameAwards FAILED");
+  console.error(err);
+
+  return NextResponse.json(
+    {
+      error:
+        err instanceof Error
+          ? err.message
+          : "saveGameAwards crashed",
+    },
+    { status: 500 }
+  );
+}
   }
 
   return NextResponse.json(data);

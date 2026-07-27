@@ -6,6 +6,7 @@ export type Game = {
   game_date: string | null;
   active: boolean;
   voting_open: boolean;
+  game_complete: boolean;
   display_order: number | null;
   season_id: number | null;
 };
@@ -15,6 +16,7 @@ type AdminGameRowProps = {
   provided: DraggableProvided;
   onUpdateGame: (id: number, updates: Partial<Game>) => void;
   onResetVoting: (gameId: number) => void;
+  onClearWinners: (gameId: number) => void;
   onClearStats: (gameId: number) => void;
 };
 
@@ -23,6 +25,7 @@ export default function AdminGameRow({
   provided,
   onUpdateGame,
   onResetVoting,
+  onClearWinners,
   onClearStats,
 }: AdminGameRowProps) {
   return (
@@ -91,12 +94,31 @@ export default function AdminGameRow({
         />
       </td>
 
+      <td className="text-center">
+        <input
+          type="checkbox"
+          checked={game.game_complete}
+          onChange={(e) =>
+            onUpdateGame(game.id, { game_complete: e.target.checked })
+          }
+        />
+      </td>
+
       <td className="text-center p-2">
         <button
           onClick={() => onResetVoting(game.id)}
           className="bg-red-600 hover:bg-red-700 px-3 py-2 rounded text-sm font-semibold w-full"
         >
           Reset Voting
+        </button>
+      </td>
+
+      <td className="text-center p-2">
+        <button
+          onClick={() => onClearWinners(game.id)}
+          className="bg-amber-600 hover:bg-amber-700 px-3 py-2 rounded text-sm font-semibold w-full"
+        >
+          Clear Winners
         </button>
       </td>
 

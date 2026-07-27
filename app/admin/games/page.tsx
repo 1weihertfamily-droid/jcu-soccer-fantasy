@@ -18,6 +18,7 @@ type Game = {
   game_date: string | null;
   active: boolean;
   voting_open: boolean;
+  game_complete: boolean;
   display_order: number | null;
   season_id: number | null;
 };
@@ -232,6 +233,42 @@ async function resetVoting(gameId: number) {
   );
 }
 
+async function clearWinners(gameId: number) {
+  const confirmed = confirm(
+    "Delete the saved award winners for this game?"
+  );
+
+  if (!confirmed) return;
+
+  const response = await fetch(
+    "/api/admin/games/clear-winners",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify({
+        gameId,
+      }),
+    }
+  );
+
+  const result =
+    await response.json();
+
+  if (!response.ok) {
+    alert(
+      `Clear winners failed: ${result.error}`
+    );
+    return;
+  }
+
+  alert(
+    "Saved award winners successfully cleared."
+  );
+}
+
 async function clearGameStats(
   gameId: number
 ) {
@@ -368,6 +405,10 @@ return (
                 </th>
 
                 <th className="text-center p-4">
+                  Game Complete
+                </th>
+
+                <th className="text-center p-4">
                   Voting
                 </th>
 
@@ -398,6 +439,7 @@ return (
                             provided={provided}
                             onUpdateGame={updateGame}
                             onResetVoting={resetVoting}
+                            onClearWinners={clearWinners}
                             onClearStats={clearGameStats}
                           />
                         )}

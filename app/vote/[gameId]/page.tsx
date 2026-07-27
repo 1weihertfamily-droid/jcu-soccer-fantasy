@@ -72,6 +72,8 @@ export default async function VotePage({
     unstoppable_defense: new Map<number, number>(),
   };
 
+  const seasonAwardCounts = new Map<number, number>();
+
   (awardWinners ?? []).forEach((award: any) => {
     const map =
       awardCounts[
@@ -83,6 +85,11 @@ export default async function VotePage({
     map.set(
       award.player_id,
       (map.get(award.player_id) ?? 0) + 1
+    );
+
+    seasonAwardCounts.set(
+      award.player_id,
+      (seasonAwardCounts.get(award.player_id) ?? 0) + 1
     );
   });
 
@@ -109,6 +116,7 @@ export default async function VotePage({
           gameId={Number(gameId)}
           players={presentPlayers}
           awardCounts={awardCounts}
+          seasonAwardCounts={seasonAwardCounts}
           awardLimits={settings}
         />
       </div>

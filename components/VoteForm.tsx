@@ -16,6 +16,7 @@ type Props = {
     hardest_worker: Map<number, number>;
     unstoppable_defense: Map<number, number>;
   };
+  seasonAwardCounts: Map<number, number>;
   awardLimits: {
     [key: string]: number;
   };
@@ -27,6 +28,7 @@ export default function VoteForm({
   gameId,
   players,
   awardCounts,
+  seasonAwardCounts,
   awardLimits,
   adminMode = false,
   initialAdminVoterId = "",
@@ -97,7 +99,8 @@ export default function VoteForm({
     ...defenseVotes,
   ].filter(Boolean);
 
-  function getAvailablePlayers(
+  function isPlayerEligible(
+    playerId: number,
     currentValue: string,
     category:
       | "goat"
@@ -105,18 +108,46 @@ export default function VoteForm({
       | "unstoppable_defense"
   ) {
     const max = awardLimits[category] ?? 999;
+    const awardsEarned =
+      awardCounts[category].get(playerId) ?? 0;
+    const totalSeasonAwards =
+      seasonAwardCounts.get(playerId) ?? 0;
 
+    const hasUnawardedPlayers = players.some(
+      (player) =>
+        (seasonAwardCounts.get(player.id) ?? 0) === 0
+    );
+
+    if (hasUnawardedPlayers) {
+      return (
+        totalSeasonAwards === 0 ||
+        String(playerId) === currentValue
+      );
+    }
+
+    return (
+      awardsEarned < max ||
+      String(playerId) === currentValue
+    );
+  }
+
+  function getAvailablePlayers(
+    currentValue: string,
+    category:
+      | "goat"
+      | "hardest_worker"
+      | "unstoppable_defense"
+  ) {
     return players.filter((player) => {
       const alreadySelected =
         String(player.id) === currentValue ||
         !allSelections.includes(String(player.id));
 
-      const awardsEarned =
-        awardCounts[category].get(player.id) ?? 0;
-
-      const eligible =
-        awardsEarned < max ||
-        String(player.id) === currentValue;
+      const eligible = isPlayerEligible(
+        player.id,
+        currentValue,
+        category
+      );
 
       return alreadySelected && eligible;
     });

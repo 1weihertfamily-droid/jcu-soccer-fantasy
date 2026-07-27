@@ -22,6 +22,108 @@ export async function POST(req: Request) {
     const uniqueSelections =
       new Set(allSelections);
 
+    const { data: game } = await supabaseAdmin
+      .from("games")
+      .select("season_id")
+      .eq("id", gameId)
+      .single();
+
+    const { data: awardSettings } = await supabaseAdmin
+      .from("award_settings")
+      .select("category,max_per_season");
+
+    const { data: rosterEntries } = await supabaseAdmin
+      .from("game_rosters")
+      .select("player_id")
+      .eq("game_id", gameId);
+
+    const presentPlayerIds = new Set(
+      (rosterEntries ?? []).map((row: any) => row.player_id)
+    );
+
+    const { data: awardWinners } = await supabaseAdmin
+      .from("award_winners")
+      .select("player_id, category")
+      .eq("season_id", game?.season_id);
+
+    const awardCounts = {
+      goat: new Map<number, number>(),
+      hardest_worker: new Map<number, number>(),
+      unstoppable_defense: new Map<number, number>(),
+    };
+
+    const seasonAwardCounts = new Map<number, number>();
+
+    (awardWinners ?? []).forEach((award: any) => {
+      const map =
+        awardCounts[
+          award.category as keyof typeof awardCounts
+        ];
+
+      if (!map) return;
+
+      map.set(
+        award.player_id,
+        (map.get(award.player_id) ?? 0) + 1
+      );
+
+      seasonAwardCounts.set(
+        award.player_id,
+        (seasonAwardCounts.get(award.player_id) ?? 0) + 1
+      );
+    });
+
+    const categoryRules = [
+      {
+        category: "goat",
+        votes: goatVotes,
+      },
+      {
+        category: "hardest_worker",
+        votes: hardestWorkerVotes,
+      },
+      {
+        category: "unstoppable_defense",
+        votes: unstoppableDefenseVotes,
+      },
+    ] as const;
+
+    for (const rule of categoryRules) {
+      const max =
+        (awardSettings ?? []).find(
+          (setting: any) =>
+            setting.category === rule.category
+        )?.max_per_season ?? 999;
+
+      const hasUnawardedPlayers = Array.from(
+        presentPlayerIds
+      ).some(
+        (playerId) =>
+          (seasonAwardCounts.get(playerId) ?? 0) === 0
+      );
+
+      for (const playerId of rule.votes) {
+        const awardsEarned =
+          awardCounts[rule.category].get(playerId) ?? 0;
+        const totalSeasonAwards =
+          seasonAwardCounts.get(playerId) ?? 0;
+
+        const eligible = hasUnawardedPlayers
+          ? totalSeasonAwards === 0
+          : awardsEarned < max;
+
+        if (!eligible) {
+          return NextResponse.json(
+            {
+              error:
+                "This ballot violates the award rotation rules.",
+            },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
     if (
       uniqueSelections.size !==
       allSelections.length

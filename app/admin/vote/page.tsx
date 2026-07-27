@@ -46,10 +46,16 @@ export default async function AdminVotePage() {
     unstoppable_defense: new Map<number, number>(),
   };
 
+  const seasonAwardCounts = new Map<number, number>();
+
   (awardWinners ?? []).forEach((award: any) => {
     const map = awardCounts[award.category as keyof typeof awardCounts];
     if (!map) return;
     map.set(award.player_id, (map.get(award.player_id) ?? 0) + 1);
+    seasonAwardCounts.set(
+      award.player_id,
+      (seasonAwardCounts.get(award.player_id) ?? 0) + 1
+    );
   });
 
   const selectedGame = games?.[0] ?? null;
@@ -74,6 +80,7 @@ export default async function AdminVotePage() {
             games={games ?? []}
             players={players ?? []}
             awardCounts={awardCounts}
+            seasonAwardCounts={seasonAwardCounts}
             awardLimits={settings}
           />
         ) : (

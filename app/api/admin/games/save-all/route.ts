@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { saveGameAwards } from "@/lib/awards";
 
 export async function POST(
   request: Request
@@ -31,6 +32,8 @@ export async function POST(
             active: game.active,
             voting_open:
               game.voting_open,
+            game_complete:
+              game.game_complete,
             display_order:
               game.display_order,
           })
@@ -44,6 +47,10 @@ export async function POST(
           },
           { status: 500 }
         );
+      }
+
+      if (game.game_complete === true) {
+        await saveGameAwards(game.id);
       }
     }
 

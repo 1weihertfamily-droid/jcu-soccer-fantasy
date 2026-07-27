@@ -22,6 +22,7 @@ type Props = {
     hardest_worker: Map<number, number>;
     unstoppable_defense: Map<number, number>;
   };
+  seasonAwardCounts: Map<number, number>;
   awardLimits: {
     [key: string]: number;
   };
@@ -31,6 +32,7 @@ export default function AdminVoteTester({
   games,
   players,
   awardCounts,
+  seasonAwardCounts,
   awardLimits,
 }: Props) {
   const [selectedGameId, setSelectedGameId] =
@@ -83,6 +85,7 @@ export default function AdminVoteTester({
           gameId={selectedGame.id}
           players={players}
           awardCounts={awardCounts}
+          seasonAwardCounts={seasonAwardCounts}
           awardLimits={awardLimits}
           adminMode
         />
